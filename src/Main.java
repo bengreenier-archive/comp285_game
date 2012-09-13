@@ -1,3 +1,5 @@
+import graphical.Vertex;
+
 
 
 public class Main {
@@ -23,5 +25,6 @@ public class Main {
 		//create the rendering loop, and start it running with the globjects.
 		graphical.Drawable displayExample = new graphical.Drawable();
 		displayExample.start(GlObjects);
+		
 	}
 }
