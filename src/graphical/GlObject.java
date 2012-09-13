@@ -17,6 +17,13 @@ public class GlObject {
 		this.color = new RGBA(255,255,255,1);
 	}
 	
+	public GlObject() {
+		this.vertices = null;
+		this.color = new RGBA(255,255,255,1); 
+	}
+
 	public Vertex[] vertices(){return vertices;}
+	public void vertices(Vertex[] val){this.vertices = val;}
 	public RGBA color(){return color;}
+	public void color(RGBA val){this.color = val;}
 }

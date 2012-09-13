@@ -5,11 +5,13 @@ public class Main {
 	public static void main(String[] args)
 	{
 		graphical.GlObject[] GlObjects = new graphical.GlObject[2];
-		graphical.Vertex[] t = new graphical.Vertex[4];
+		/*graphical.Vertex[] t = new graphical.Vertex[4];
 		t[0]=new graphical.Vertex(100,100);
 		t[1]=new graphical.Vertex(100+200,100);
 		t[2]=new graphical.Vertex(100+200,100+200);
-		t[3]=new graphical.Vertex(100,100+200);
+		t[3]=new graphical.Vertex(100,100+200);*/
+		
+		GlObjects[0] = new shapes.Rectangle(new graphical.Vertex(10,10), 100, 200, new graphical.RGBA(0, 0, 255, 1));
 
 		graphical.Vertex[] i = new graphical.Vertex[4];
 		i[0]=new graphical.Vertex(400,20);
@@ -18,7 +20,7 @@ public class Main {
 		i[3]=new graphical.Vertex(400,100);
 
 
-		GlObjects[0]=new graphical.GlObject(t,new graphical.RGBA(255,0,0,1));
+		//GlObjects[0]=new graphical.GlObject(t,new graphical.RGBA(255,0,0,1));
 		GlObjects[1]=new graphical.GlObject(i,new graphical.RGBA(0,0,255,1));
 
 		graphical.Drawable displayExample = new graphical.Drawable();
