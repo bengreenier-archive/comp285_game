@@ -12,4 +12,9 @@ public class Vertex {
 	
 	public float x(){return x;}
 	public float y(){return y;}
+	public void shift(Vertex in){this.x = this.x+in.x(); this.y=this.y+in.y();}//shift the current Vertex by in
+	
+	public void update(Vertex in){this.x = in.x(); this.y = in.y(); }//set the current Vertex to in
+	
+	public static Vertex add(Vertex one, Vertex two){return new Vertex(one.x()+two.x(),one.y()+two.y());}//static vertex adder
 }
