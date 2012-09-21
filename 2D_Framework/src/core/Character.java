@@ -4,6 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 
 public class Character extends GameObject{
+
 	public Character(util.Vertex point,float size)
 	{
 		super();
@@ -12,6 +13,8 @@ public class Character extends GameObject{
 		this.setColor(new util.RGBA(0, 255, 0, 1));
 		this.setVertices(util.Vertex.createSquare(new util.Vertex(10,10), 20));
 		
+		
+		
 		this.setEvent(new input.Event(){
 
 			@Override
@@ -19,7 +22,6 @@ public class Character extends GameObject{
 				// TODO Auto-generated method stub
 				input.BooleanVector bvec = new input.BooleanVector(4);//create a new bvec with 4 toggles, for directions w(0),a(1),s(2),d(3)
 				
-				@SuppressWarnings("unused")
 				float SPEED_CONSTANT=0.2f;//define speed multiplier thingy
 				
 				while (Keyboard.next()) {
@@ -54,7 +56,7 @@ public class Character extends GameObject{
 				
 				//now query the bvec to see what's true, and concatenate a Vertex, from the true directions, using the accel vertex as a multiplier/constant
 				//essentially generating the motion vector
-				/*util.Vertex vtex = super.centerPoint();
+				util.Vertex vtex = self.getPos();
 				//[DO IT]
 				if (bvec.storage[0])
 					vtex.shift(new util.Vertex(0,SPEED_CONSTANT));
@@ -65,7 +67,7 @@ public class Character extends GameObject{
 				if (bvec.storage[3])
 					vtex.shift(new util.Vertex(SPEED_CONSTANT,0));
 				
-				super.updatePos(vtex);*/
+				self.setPos(vtex);
 			}
 			
 			

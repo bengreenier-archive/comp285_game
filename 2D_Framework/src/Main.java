@@ -32,6 +32,8 @@ public class Main {
 				}
 			});
 			
+			objectsList.add(new core.Character(new util.Vertex(20,20),20));
+			
 			drawing.RenderLoop loop = new drawing.RenderLoop();
 			loop.setGlobjects(objectsList);
 			loop.start();
