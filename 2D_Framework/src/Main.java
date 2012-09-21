@@ -21,7 +21,7 @@ public class Main {
 			objectsList.add(gameobject);
 			
 			
-			//note how smooth this is, and easy to implement, without cluttering the namespace up with var names.
+			//note how smooth this is, and easy to implement, without cluttering the "namespace" up with var names.
 			objectsList.add(new GameObject(){
 				@Override
 				public void instantiate()
@@ -37,8 +37,6 @@ public class Main {
 			loop.start();
 			
 			System.out.println("Yay, Threaded!");
-			
-			
 			
 		
 	}
