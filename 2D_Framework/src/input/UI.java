@@ -5,17 +5,18 @@ public class UI extends physics.Physics {
 	public UI()
 	{
 		super();
-		setEvent(new Event(){
-
-			@Override
-			public void pollInput() {
-				// TODO Auto-generated method stub
-				
-			}});
+		setEvent(null);
+		instantiate();
+	}
+	
+	public void instantiate()
+	{
+		//default instantiate method
 	}
 	
 	public void checkInput()
 	{
+		if (evt!=null)
 		evt.pollInput();
 	}
 	

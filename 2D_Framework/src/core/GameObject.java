@@ -1,13 +1,14 @@
 package core;
 
 public class GameObject extends input.UI{
-	private util.Vertex pos;
-	final GameObject self=this;
+	
+	
 	
 	public GameObject()
 	{
 		super();
 		instantiate();
+		
 	}
 	
 
@@ -17,14 +18,7 @@ public class GameObject extends input.UI{
 	}
 
 
-	public util.Vertex getPos() {
-		return pos;
-	}
 
-
-	public void setPos(util.Vertex pos) {
-		this.pos = pos;
-	}
 	
 	
 }

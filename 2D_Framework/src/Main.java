@@ -1,6 +1,8 @@
 
 import java.util.ArrayList;
 
+import org.lwjgl.input.Keyboard;
+
 
 import core.*;
 
@@ -33,6 +35,31 @@ public class Main {
 			});
 			
 			objectsList.add(new core.Character(new util.Vertex(20,20),20));
+			
+			
+			//this allows KEY_ESCAPE to quit the game [a non visual object]
+			objectsList.add(new GameObject(){
+				@Override
+				public void instantiate()
+				{
+					this.GL_TYPE=drawing.GL_TYPES.NOTHING;
+					this.setEvent(new input.Event(){
+
+						@Override
+						public void pollInput() {
+							// TODO Auto-generated method stub
+							while (Keyboard.next()) {//AH RIGHT. you can't have two loops like this, so keys will need to be handled differnetly :-/
+							    if (Keyboard.getEventKeyState()) {
+							    	if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+							    		System.exit(0);
+							    	}
+							    }
+							}
+						}});
+				}
+			});
+			
+			
 			
 			drawing.RenderLoop loop = new drawing.RenderLoop();
 			loop.setGlobjects(objectsList);

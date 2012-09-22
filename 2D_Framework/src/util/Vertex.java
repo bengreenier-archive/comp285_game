@@ -51,4 +51,15 @@ public class Vertex {
 		return t;
 	}
 	
+	@Override
+	public Vertex clone()
+	{
+		return new Vertex(x(),y());
+	}
+	
+	public String print()
+	{
+		return "[x:"+x()+"] , [y:"+y()+"]";
+	}
+	
 }
