@@ -24,14 +24,14 @@ public class Character extends GameObject{
 		setEvent(new input.Event(){
 
 			@Override
-			public void pollInput() {
+			public void keys() {
 				// TODO Auto-generated method stub
-				
+				System.out.println("^^| "+bvec.print());
 				
 				float SPEED_CONSTANT=0.2f;//define speed multiplier thingy
 				
 				//this isn't functioning right, they are getting set to false immediately, even if key is held. #fail
-				while (Keyboard.next()) {
+				//y? GROWLFACE
 				    if (Keyboard.getEventKeyState()) {
 				    	if (Keyboard.getEventKey() == Keyboard.KEY_W || Keyboard.getEventKey() == Keyboard.KEY_UP) {
 				    		bvec.storage[0]=true;
@@ -59,13 +59,13 @@ public class Character extends GameObject{
 							bvec.storage[3]=false;
 						}
 				    }
-				}
 				
 				
+				System.out.println(bvec.print());
 				//now query the bvec to see what's true, and concatenate a Vertex, from the true directions, using the accel vertex as a multiplier/constant
 				//essentially generating the motion vector
 				
-				util.Vertex vtex = getPos();
+				util.Vertex vtex = getPos();//this could be slowing things down, eventually
 				
 				
 				//[DO IT]
@@ -80,6 +80,19 @@ public class Character extends GameObject{
 				
 				if (bvec.storage[0] || bvec.storage[1] || bvec.storage[2] || bvec.storage[3])
 				setVertices(util.Vertex.createSquare(vtex, 20));
+				
+			}
+
+
+			@Override
+			public void mouse() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void other() {
+				// TODO Auto-generated method stub
 				
 			}
 			

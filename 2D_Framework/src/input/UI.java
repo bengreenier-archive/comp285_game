@@ -14,10 +14,24 @@ public class UI extends physics.Physics {
 		//default instantiate method
 	}
 	
-	public void checkInput()
+	public void checkKeysEvent()
 	{
 		if (evt!=null)
-		evt.pollInput();
+		evt.keys();
+		else
+		System.out.println("Null");
+	}
+	
+	public void checkMouseEvent()
+	{
+		if (evt!=null)
+		evt.mouse();
+	}
+	
+	public void checkOtherEvent()
+	{
+		if (evt!=null)
+		evt.other();
 	}
 	
 	public Event getEvent() {

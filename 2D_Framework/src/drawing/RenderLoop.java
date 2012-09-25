@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import input.UI;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -45,7 +46,7 @@ public class RenderLoop extends Thread {
 		    	if (obj.GL_TYPE != GL_TYPES.NOTHING)
 		    	{
 			    		
-				    // set the color of the quad (R,G,B,A)
+				    // set the color of the shape (R,G,B,A)
 				    GL11.glColor4f(obj.color().r(),obj.color().g(),obj.color().b(),obj.color().a());
 				    
 				     
@@ -82,12 +83,14 @@ public class RenderLoop extends Thread {
 				    
 		    	}    
 				    
-		    }
+		    }//! nothing drops to here !
 		    
-		    //handle all objects inputs
-		    for (UI obj : globjects)
-		    {
-		    	obj.checkInput();
+		    while (Keyboard.next()) {//? GROWFACE
+			    //handle all objects inputs
+			    for (UI obj : globjects)
+			    {
+			    	obj.checkKeysEvent();
+			    }
 		    }
 		    
 			Display.update();

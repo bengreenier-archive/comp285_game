@@ -12,7 +12,7 @@ public class Main {
 	{
 			ArrayList<GameObject> objectsList = new ArrayList<GameObject>();//dynamic list example
 			
-			
+		/*	
 			//create a game object, and set some properties on it.
 			GameObject gameobject = new GameObject();
 			gameobject.setColor(new util.RGBA(255, 255, 255, 1));
@@ -33,7 +33,7 @@ public class Main {
 					this.GL_TYPE=drawing.GL_TYPES.QUAD;
 				}
 			});
-			
+			*/
 			objectsList.add(new core.Character(new util.Vertex(20,20),20));
 			
 			
@@ -46,15 +46,24 @@ public class Main {
 					this.setEvent(new input.Event(){
 
 						@Override
-						public void pollInput() {
+						public void keys() {
 							// TODO Auto-generated method stub
-							while (Keyboard.next()) {//AH RIGHT. you can't have two loops like this, so keys will need to be handled differnetly :-/
-							    if (Keyboard.getEventKeyState()) {
-							    	if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+							  if (Keyboard.getEventKeyState()) {
+							    	if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
 							    		System.exit(0);
-							    	}
-							    }
-							}
+							  }
+						}
+
+						@Override
+						public void mouse() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void other() {
+							// TODO Auto-generated method stub
+							
 						}});
 				}
 			});
