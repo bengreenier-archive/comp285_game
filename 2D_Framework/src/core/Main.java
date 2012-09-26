@@ -1,3 +1,4 @@
+package core;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,8 @@ import core.*;
 
 public class Main {
 
+	public static drawing.RenderLoop gameLoop=null;
+	
 	public static void main(String[] args)
 	{
 			ArrayList<GameObject> objectsList = new ArrayList<GameObject>();//dynamic list example
@@ -46,15 +49,6 @@ public class Main {
 					this.setEvent(new input.Event(){
 
 						@Override
-						public void keys() {
-							// TODO Auto-generated method stub
-							  if (Keyboard.getEventKeyState()) {
-							    	if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
-							    		System.exit(0);
-							  }
-						}
-
-						@Override
 						public void mouse() {
 							// TODO Auto-generated method stub
 							
@@ -64,6 +58,31 @@ public class Main {
 						public void other() {
 							// TODO Auto-generated method stub
 							
+						}
+
+						@Override
+						public void preKeys() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void postKeys() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void upKeys() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void downKeys() {
+							// TODO Auto-generated method stub
+							if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
+					    		System.exit(0);
 						}});
 				}
 			});
@@ -71,11 +90,14 @@ public class Main {
 			
 			
 			drawing.RenderLoop loop = new drawing.RenderLoop();
+			gameLoop=loop;
+			
 			loop.setGlobjects(objectsList);
 			loop.start();
-			
 			System.out.println("Yay, Threaded!");
 			
 		
 	}
+	
+	
 }

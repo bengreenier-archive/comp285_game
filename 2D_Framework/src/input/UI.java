@@ -14,14 +14,6 @@ public class UI extends physics.Physics {
 		//default instantiate method
 	}
 	
-	public void checkKeysEvent()
-	{
-		if (evt!=null)
-		evt.keys();
-		else
-		System.out.println("Null");
-	}
-	
 	public void checkMouseEvent()
 	{
 		if (evt!=null)
@@ -39,6 +31,30 @@ public class UI extends physics.Physics {
 	}
 	public void setEvent(Event evt) {
 		this.evt = evt;
+	}
+
+	public void checkPreKeys() {
+		// TODO Auto-generated method stub
+		if (evt!=null)
+			evt.preKeys();
+	}
+
+	public void checkKeysUpEvent() {
+		// TODO Auto-generated method stub
+		if (evt!=null)
+			evt.upKeys();
+	}
+
+	public void checkKeysDownEvent() {
+		// TODO Auto-generated method stub
+		if (evt!=null)
+			evt.downKeys();
+	}
+
+	public void checkPostKeys() {
+		// TODO Auto-generated method stub
+		if (evt!=null)
+			evt.postKeys();
 	}
 	
 

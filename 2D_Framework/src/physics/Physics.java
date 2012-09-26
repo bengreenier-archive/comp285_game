@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
+
 
 public class Physics extends drawing.Drawing {//TODO decide how to implement stepping to update display, and to step
 	private Body body;
@@ -13,6 +15,11 @@ public class Physics extends drawing.Drawing {//TODO decide how to implement ste
 	{
 		super();
 		setBody(null);
+		
+		//if ever a physics object is made, and there is no static defaultWorld, create it, and store it.
+		if (defaultWorld==null)
+			defaultWorld = createWorld(new util.Vertex(0,-10), true);
+		
 		instantiate();
 	}
 	
@@ -84,5 +91,21 @@ public class Physics extends drawing.Drawing {//TODO decide how to implement ste
 		
 		return list;
 	}
+	
+	static public BodyDef createBodyDef(util.Vertex point,float angle,String type,boolean awake,boolean bullet)
+	{
+		BodyDef t = new BodyDef();
+		t.active=true;
+		t.allowSleep=true;
+		t.angle=angle;
+		t.awake=awake;
+		t.bullet=bullet;
+		t.position= new Vec2(point.x(),point.y());//convert to box2d?space
+		t.type=BodyType.valueOf(type);
+		return t;
+		
+	}
+	
+	static public World defaultWorld=null;
 	
 }
