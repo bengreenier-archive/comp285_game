@@ -30,7 +30,7 @@ public class Character extends GameObject{
 		setColor(new util.RGBA(0, 255, 0, 1));
 		setVertices(util.Vertex.createSquare(new util.Vertex(10,10), 20));
 		BodyDef bdef = physics.Physics.createBodyDef(new util.Vertex(100,100), 0, "DYNAMIC", true, false);
-		
+		//create shape fixture, and set density.
 		
 		setEvent(new input.Event(){
 
@@ -39,9 +39,11 @@ public class Character extends GameObject{
 				// TODO Auto-generated method stub
 				if (Mouse.isButtonDown(0))
 				{
-					System.out.println("mouse down");
-					ArrayList<GameObject> t = core.Main.gameLoop.getGlobjects();
-					t.add(new core.GameObject(){
+					
+					
+					//get the Default mainPtr, set to the Main instance, and get its renderloop, then call spawn on that
+					//renderloop, creating a gameobject in that context, on the start of the next game loop
+					core.Main.mainPtr.getRenderLoop().spawn(new core.GameObject(){
 						@Override
 						public void instantiate()
 						{
@@ -51,7 +53,7 @@ public class Character extends GameObject{
 						}
 						
 					});
-					core.Main.gameLoop.setGlobjects(t);
+					
 				}
 			}
 

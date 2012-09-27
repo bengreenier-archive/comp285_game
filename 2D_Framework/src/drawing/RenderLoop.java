@@ -16,7 +16,16 @@ import core.GameObject;
 
 public class RenderLoop extends Thread {
 	private ArrayList<GameObject> globjects;
+	private ArrayList<GameObject> enqueue;
+	private ArrayList<GameObject> dequeue;//research other datatypes for these
 
+	public RenderLoop()
+	{
+		globjects=new ArrayList<GameObject>();
+		enqueue=new ArrayList<GameObject>();
+		dequeue=new ArrayList<GameObject>();
+	}
+	
 	public void run() {
 		try {
 			Display.setDisplayMode(new DisplayMode(800,600));
@@ -26,7 +35,7 @@ public class RenderLoop extends Thread {
 			System.exit(-100);
 		}
 
-		// init OpenGL here
+		// init OpenGL here 
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 		GL11.glOrtho(0, 800, 0, 600, 1, -1);
@@ -34,7 +43,33 @@ public class RenderLoop extends Thread {
 
 		//the following is configured for the GL_TYPES for a solid color per obj only. no textures/gradients/etc
 		while (!Display.isCloseRequested()) {
-
+			System.out.println("Rendering Object Count: "+globjects.size());
+			//modify globjects as needed
+			try
+			{
+				for (GameObject obj : dequeue)
+				if (!globjects.remove(obj))
+					throw new Exception("Couldn't remove "+obj);
+				
+				for (GameObject obj : enqueue)
+					globjects.add(obj);
+				
+				dequeue.clear();
+				enqueue.clear();
+				
+				if (globjects.size()>=1500)
+				{
+					//limit size somehow, removing old entries first.
+					//for (int i=globjects.size()-1; i>=globjects.size()-1500; i--)
+					//globjects.remove(i);
+				}
+				
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+			
 			// render OpenGL here
 			// Clear the screen and depth buffer
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);	
@@ -124,6 +159,19 @@ public class RenderLoop extends Thread {
 
 	public ArrayList<GameObject> getGlobjects(){
 		return this.globjects;
+	}
+	
+	
+	//queues and creates obj when possible
+	public void spawn(GameObject obj)
+	{
+		enqueue.add(obj);
+	}
+	
+	//dequeues and removes obj when possible
+	public void kill(GameObject obj)
+	{
+		dequeue.add(obj);
 	}
 
 
