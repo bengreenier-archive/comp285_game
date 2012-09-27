@@ -1,15 +1,9 @@
 package core;
 
-import java.util.ArrayList;
 
-import org.jbox2d.collision.shapes.CircleShape;
-import org.jbox2d.collision.shapes.Shape;
-import org.jbox2d.dynamics.BodyDef;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import physics.Physics;
-import util.RGBA;
 
 
 public class Character extends GameObject{
@@ -29,7 +23,7 @@ public class Character extends GameObject{
 		GL_TYPE=drawing.GL_TYPES.QUAD;
 		setColor(new util.RGBA(0, 255, 0, 1));
 		setVertices(util.Vertex.createSquare(new util.Vertex(10,10), 20));
-		BodyDef bdef = physics.Physics.createBodyDef(new util.Vertex(100,100), 0, "DYNAMIC", true, false);
+		//BodyDef bdef = physics.Physics.createBodyDef(new util.Vertex(100,100), 0, "DYNAMIC", true, false);
 		//create shape fixture, and set density.
 		
 		setEvent(new input.Event(){
@@ -43,7 +37,7 @@ public class Character extends GameObject{
 					
 					//get the Default mainPtr, set to the Main instance, and get its renderloop, then call spawn on that
 					//renderloop, creating a gameobject in that context, on the start of the next game loop
-					core.Main.mainPtr.getRenderLoop().spawn(new core.GameObject(){
+					core.Main.mainPtr.getRenderLoop().register(new core.GameObject(){
 						@Override
 						public void instantiate()
 						{

@@ -12,6 +12,7 @@ public class Main {
 	public static Main mainPtr=null;
 	
 	private drawing.RenderLoop renderLoop;
+	private input.EventLoop eventLoop;
 	private ArrayList<GameObject> objectsList;
 	public String title;
 	
@@ -20,6 +21,7 @@ public class Main {
 		mainPtr=this;
 		title="";
 		setRenderLoop(null);
+		setEventLoop(null);
 		setObjectsList(null);
 		instantiate();
 	}
@@ -41,6 +43,9 @@ public class Main {
 					//create the mains objectsList and renderLoop
 					setObjectsList(new ArrayList<GameObject>());
 					setRenderLoop(new drawing.RenderLoop());
+					setEventLoop(new input.EventLoop());
+					getRenderLoop().setName("Core Main RenderLoop");
+					getEventLoop().setName("Core Main EventLoop");
 					
 					getObjectsList().add(new core.Character(new util.Vertex(20,20),20));
 					//this allows KEY_ESCAPE to quit the game [a non visual object]
@@ -85,13 +90,28 @@ public class Main {
 								public void downKeys() {
 									// TODO Auto-generated method stub
 									if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE)
-							    		System.exit(0);
+									{
+										core.Main.mainPtr.getEventLoop().requestShutdown();
+										core.Main.mainPtr.getRenderLoop().requestShutdown();
+									}
+										
 								}});
 						}
 					});
 					
-					getRenderLoop().setGlobjects(getObjectsList());
+					
+					//Messy way to start the threads : 
 					getRenderLoop().start();
+					
+					boolean trash=true;
+					while(trash)
+						if (getRenderLoop().isUpSuccessfully())
+							{
+								getEventLoop().start();
+								trash=false;
+							}
+					
+					
 				}
 			};
 			
@@ -129,6 +149,20 @@ public class Main {
 	 */
 	public void setObjectsList(ArrayList<GameObject> objectsList) {
 		this.objectsList = objectsList;
+	}
+
+	/**
+	 * @return the eventLoop
+	 */
+	public input.EventLoop getEventLoop() {
+		return eventLoop;
+	}
+
+	/**
+	 * @param eventLoop the eventLoop to set
+	 */
+	public void setEventLoop(input.EventLoop eventLoop) {
+		this.eventLoop = eventLoop;
 	}
 	
 	

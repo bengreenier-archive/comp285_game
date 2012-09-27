@@ -2,28 +2,19 @@ package drawing;
 
 //Uses exit -100 scale, 100,101,102,etc
 
-import java.util.ArrayList;
-
-import input.UI;
-
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
-import core.GameObject;
-
-public class RenderLoop extends Thread {
-	private ArrayList<GameObject> globjects;
-	private ArrayList<GameObject> enqueue;
-	private ArrayList<GameObject> dequeue;//research other datatypes for these
-
+public class RenderLoop extends Thread implements util.ThreadMethods {
+	private ConcurrentLinkedQueue<drawing.Drawing> objects;
+	private volatile boolean requireShutdown;
 	public RenderLoop()
 	{
-		globjects=new ArrayList<GameObject>();
-		enqueue=new ArrayList<GameObject>();
-		dequeue=new ArrayList<GameObject>();
+		objects = new ConcurrentLinkedQueue<drawing.Drawing>();
+		requireShutdown=false;
 	}
 	
 	public void run() {
@@ -43,32 +34,6 @@ public class RenderLoop extends Thread {
 
 		//the following is configured for the GL_TYPES for a solid color per obj only. no textures/gradients/etc
 		while (!Display.isCloseRequested()) {
-			System.out.println("Rendering Object Count: "+globjects.size());
-			//modify globjects as needed
-			try
-			{
-				for (GameObject obj : dequeue)
-				if (!globjects.remove(obj))
-					throw new Exception("Couldn't remove "+obj);
-				
-				for (GameObject obj : enqueue)
-					globjects.add(obj);
-				
-				dequeue.clear();
-				enqueue.clear();
-				
-				if (globjects.size()>=1500)
-				{
-					//limit size somehow, removing old entries first.
-					//for (int i=globjects.size()-1; i>=globjects.size()-1500; i--)
-					//globjects.remove(i);
-				}
-				
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-			
 			
 			// render OpenGL here
 			// Clear the screen and depth buffer
@@ -77,10 +42,9 @@ public class RenderLoop extends Thread {
 
 
 			//draw all objects
-			for (Drawing obj : globjects)
+			for (Drawing obj : objects)
 			{
-				if (obj.GL_TYPE != GL_TYPES.NOTHING)
-				{
+				
 
 					// set the color of the shape (R,G,B,A)
 					GL11.glColor4f(obj.color().r(),obj.color().g(),obj.color().b(),obj.color().a());
@@ -119,59 +83,46 @@ public class RenderLoop extends Thread {
 
 				}    
 
-			}//! nothing drops to here !
-
-			//wow, speaking of inefficiency....
-
-			//====Begin Events====/
-			for (UI obj: globjects)
-				if (obj.getEvent()!=null)
-					obj.getEvent().mouse();//directly query the mouse
 			
-			for (UI obj : globjects)
-				obj.checkPreKeys();
-			
-			while (Keyboard.next()) {
-				//handle all objects inputs
-				if (Keyboard.getEventKeyState())
-					for (UI obj : globjects)
-						obj.checkKeysDownEvent();
-				else
-					for (UI obj : globjects)
-						obj.checkKeysUpEvent();
 
+		
+			Display.update();
+			
+			if (requireShutdown)
+			{
+				Display.destroy();
+				return;
 			}
 			
-			for (UI obj : globjects)
-				obj.checkPostKeys();
-			//====End Events====//
-
-			Display.update();
 		}
 
 		Display.destroy();
 	}
 
 
-	public void setGlobjects(ArrayList<GameObject> globjects){
-		this.globjects=globjects;
+	public void register(drawing.Drawing obj)
+	{
+		objects.add(obj);
+	}
+	
+	public boolean unregister(drawing.Drawing obj)
+	{
+		return objects.remove(obj);
 	}
 
-	public ArrayList<GameObject> getGlobjects(){
-		return this.globjects;
+	@Override
+	public void requestShutdown() {
+		// TODO Auto-generated method stub
+		requireShutdown=true;
 	}
-	
-	
-	//queues and creates obj when possible
-	public void spawn(GameObject obj)
-	{
-		enqueue.add(obj);
-	}
-	
-	//dequeues and removes obj when possible
-	public void kill(GameObject obj)
-	{
-		dequeue.add(obj);
+
+	@Override
+	public boolean isUpSuccessfully() {
+		// TODO Auto-generated method stub
+		if (objects!=null && Display.isCreated())
+			return true;
+		else
+			return false;
 	}
 
 
