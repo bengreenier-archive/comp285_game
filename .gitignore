@@ -4,9 +4,20 @@
 .project
 bin/*
 *.class
-
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.dll
+*.jnilib
+*.dylib
+*.xml
+*.png
+*.prefs
 # Package Files #
 *.jar
 *.war
 *.ear
-
+*.zip
