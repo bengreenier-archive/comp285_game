@@ -1,4 +1,4 @@
-2D_Framework
+Comp285 Game
 ============
 
-My 2D java game framework, originally designed for one of my classes
+The game @JGual93 and i are working on for our Comp285 class.
