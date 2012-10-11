@@ -14,8 +14,8 @@ import org.newdawn.slick.Graphics;
  */
 public abstract class Actor extends AbstractEntity {
 	/** The maximum velocity an actor can jump at - this is used to prevent some odd effects of a penetration based physics engine */
-	private static final int MAX_JUMP_VEL = 50;
-	
+	private static final int MAX_JUMP_VEL = 80;
+	private static final int MAX_RUN_VEL = 20;
 	/** The world in which the actor exists */
 	private World world;
 	
@@ -31,7 +31,8 @@ public abstract class Actor extends AbstractEntity {
 	private boolean moving = false;
 	/** True if the actor is in the process of falling down */
 	private boolean falling = false;
-	
+	/** true if the actor is in the process of running */
+	private boolean running = false;
 	/** The size of the actor's collision bounds */
 	private float size;
 	/** The x component of the velocity for the current update */
@@ -52,10 +53,11 @@ public abstract class Actor extends AbstractEntity {
 		body.setUserData(this);
 		body.setRestitution(0);
 		body.setFriction(0f);
-		body.setMaxVelocity(20, 50);
+		body.setMaxVelocity(40, 80);
 		body.setRotatable(false);
 		setPosition(x,y);
 	}
+	
 	
 	/**
 	 * @see org.newdawn.penguin.Entity#setWorld(net.phys2d.raw.World)
@@ -201,6 +203,17 @@ public abstract class Actor extends AbstractEntity {
 			setVelocity(getVelX(), -MAX_JUMP_VEL);
 		}
 		
+		/*
+		 * if the max x velocity is greater than MAX_RUN_VEL, cap it to MAX_RUN_VEL if !running()
+		 * if the max x vel is less then -MAX_RUN_VEL, cap it to -MAX_RUN_VEL if !running()
+		 */
+		if (getVelX() > MAX_RUN_VEL && !running())
+			setVelocity(MAX_RUN_VEL,getVelY());
+		if (getVelX() < -MAX_RUN_VEL && !running())
+			setVelocity(-MAX_RUN_VEL,getVelY());
+		
+		
+		
 		// handle jumping as opposed to be moving up. This prevents
 		// bounces on edges
 		if ((!jumped) && (getVelY() < 0)) {
@@ -267,5 +280,15 @@ public abstract class Actor extends AbstractEntity {
 		}
 		
 		return false;
+	}
+
+
+	public boolean running() {
+		return running;
+	}
+
+
+	public void setRunning(boolean running) {
+		this.running = running;
 	}
 }

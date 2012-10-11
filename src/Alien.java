@@ -39,6 +39,14 @@ public class Alien extends Actor {
 		run = new SpriteSheet("res/run.png", 50, 50);
 		jump = new SpriteSheet("res/jump.png", 50, 50);
 	}
+	
+	/*public Alien(float x, float y, float mass, float width,float height) throws SlickException {
+		super(x, y, mass, width,height);
+	
+		run = new SpriteSheet("res/run.png", 50, 50);
+		jump = new SpriteSheet("res/jump.png", 50, 50);
+	}*/
+
 
 	/**
 	 * @see org.newdawn.penguin.Actor#render(org.newdawn.slick.Graphics)

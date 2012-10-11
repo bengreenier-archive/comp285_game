@@ -69,11 +69,11 @@ public class InGameState extends BasicGameState {
 		
 		player = new Alien(100,150,1f,24);
 		env.addEntity(player);
-		env.addEntity(new Crate(300,100, 60,60,10));
-		env.addEntity(new Crate(550,40, 46,46,5));
-		env.addEntity(new Crate(555,-10, 46,46,5));
 		env.addEntity(new Crate(545,100, 46,46,5));
 		env.addEntity(new Crate(545,30,46,46,5));
+		env.addEntity(new Crate(545,0,46,46,5));
+		env.addEntity(new Crate(545,130,46,46,5));
+		env.addEntity(new Crate(200,30,46,46,5));
 		
 		this.env = env;
 	}
@@ -110,7 +110,7 @@ public class InGameState extends BasicGameState {
 		
 		g.translate((int) xoffset, (int) yoffset);
 		
-		drawString(g,"Cursors - Move   Ctrl - Jump   B - Show Bounds   R - Restart", 580);
+		drawString(g,"Cursors - Move   Space - Jump   B - Show Bounds   R - Restart", 580);
 	}
 
 	/**
@@ -153,9 +153,12 @@ public class InGameState extends BasicGameState {
 		// over so is reasonably small. The jump force is a one shot deal and so is reasonably
 		// big
 		float moveForce = 100;
-		float jumpForce = 20000;
+		float jumpForce = 1000;
 		
 		totalDelta += delta;
+		
+		
+
 		
 		// setup the player's moving flag, this control the animation
 		player.setMoving(false);
@@ -178,21 +181,29 @@ public class InGameState extends BasicGameState {
 				player.applyForce(moveForce, 0);
 			}
 			if (input.isKeyDown(Input.KEY_V))
+			{
+				player.setRunning(true);
 				if (player.facingRight())
 					player.applyForce(2*moveForce,0);
 				else
 					player.applyForce(-2*moveForce,0);
+			}else
+				player.setRunning(false);
+			
 			
 			if (player.onGround()) {
-				if ((input.isKeyPressed(Input.KEY_LCONTROL)) || input.isKeyPressed(Input.KEY_SPACE)) {
-					if (player.facingRight()) {
-						player.applyForce(0, -jumpForce);
-					} else {
-						player.applyForce(0, -jumpForce);
+				if (input.isKeyPressed(Input.KEY_SPACE)) {
+					if (input.isKeyDown(Input.KEY_LSHIFT))
+						{
+							player.applyForce(0, -(2*jumpForce));
+						}else
+						{
+							player.applyForce(0, -jumpForce);
+						}
 					}
-				}
+				
 			}
-			if (!input.isKeyDown(Input.KEY_LCONTROL) && !input.isKeyDown(Input.KEY_SPACE)) {
+			if (!input.isKeyDown(Input.KEY_SPACE)) {
 				if (player.jumping()) {
 					player.setVelocity(player.getVelX(), player.getVelY() * 0.95f);
 				}
