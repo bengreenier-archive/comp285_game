@@ -19,7 +19,6 @@ public class TileShapes {
 	public static final Polygon LEFTSLOPE;
 	/** The shape for the right slope tile */
 	public static final Polygon RIGHTSLOPE;
-	
 	static {
 		BLOCK = new Polygon();
 		BLOCK.addPoint(0,0);

@@ -50,7 +50,7 @@ public class InGameState extends BasicGameState {
 	 */
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		background = new Image("res/cave.png");
+		background = new Image("res/genetica/Other/farbkg.png");
 		
 		restart();
 	}
