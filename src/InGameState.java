@@ -1,4 +1,7 @@
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -9,6 +12,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 
 /**
  * Simple platform single state to render the tile map and the entities, update
@@ -37,6 +46,9 @@ public class InGameState extends BasicGameState {
 	private int controlInterval = 50;
 	/** True if we're showing the bounds of the environment's shapes */
 	private boolean showBounds = false;
+	
+	/** stores not my player positions, when acting as server*/
+	private ArrayList<Vec4f> others = new ArrayList<Vec4f>();
 	
 	/**
 	 * @see org.newdawn.slick.state.BasicGameState#getID()
@@ -74,6 +86,84 @@ public class InGameState extends BasicGameState {
 		env.addEntity(new Crate(545,0,46,46,5));
 		env.addEntity(new Crate(545,130,46,46,5));
 		env.addEntity(new Crate(200,30,46,46,5));
+		env.addEntity(new Star(10,10,10,3,30,30));
+		
+		boolean server = true;
+		boolean client = false;
+		
+		if (server)
+		{
+			Server srv = new Server();
+			Kryo kryo = srv.getKryo();
+			kryo.register(Vec4f.class);
+			
+			srv.start();
+			try {
+				srv.bind(54555, 54777);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//the saving to the arraylist, listener
+			srv.addListener(new Listener() {
+				   public void received (Connection connection, Object object) {
+				      if (object instanceof Vec4f) {
+				         Vec4f incoming = (Vec4f)object;
+				         if (others.contains(incoming))
+				        	 others.get(others.indexOf(incoming)).set(incoming);
+				         else
+				        	 others.add(incoming);
+				         
+				      }
+				   }
+				});
+			
+			//the telling others/our position(s), listener
+			srv.addListener(new Listener() {
+				   public void received (Connection connection, Object object) {
+				     for (Vec4f obj : others)
+					   connection.sendUDP(obj);
+				     
+				     //ours
+				     connection.sendUDP(new Vec4f(player.getX(),player.getY(),player.getVelX(),player.getVelY()));
+				   }
+				});
+		}
+		
+		if (client)
+		{
+			
+			Client clnt = new Client();
+			
+			Kryo kryo = clnt.getKryo();
+			kryo.register(Vec4f.class);
+			
+			
+			clnt.start();
+			try {
+				clnt.connect(5000, clnt.discoverHost(54777, 5000), 54555, 54777);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//store the other we were just given, if it's new, otherwise update the old version
+			clnt.addListener(new Listener() {
+				   public void received (Connection connection, Object object) {
+					   if (object instanceof Vec4f) {
+					         Vec4f incoming = (Vec4f)object;
+					         if (others.contains(incoming))
+					        	 others.get(others.indexOf(incoming)).set(incoming);
+					         else
+					        	 others.add(incoming);
+					         
+					      }
+				   }
+				});
+		}
+		
+		
 		
 		this.env = env;
 	}
@@ -231,6 +321,16 @@ public class InGameState extends BasicGameState {
 		if (yoffset > (bounds.getY() + bounds.getHeight()) - 600) {
 			yoffset = (bounds.getY() + bounds.getHeight()) - 600;
 		}
+		
+		Client clnt = new Client();
+		clnt.start();
+		try {
+			clnt.connect(5000, clnt.discoverHost(54777, 5000), 54555, 54777);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		clnt.sendUDP(new Vec4f(player.getX(),player.getY(),player.getVelX(),player.getVelY()));
 	}
 
 }

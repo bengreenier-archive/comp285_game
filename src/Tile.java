@@ -21,7 +21,7 @@ public class Tile {
 	 */
 	public Tile(Image image, Shape shape) {
 		this.shape = shape;
-		this.image = image;
+		this.image = image.getScaledCopy(32,32);//so that it's always tile sized
 	}
 	
 	/**
