@@ -21,14 +21,14 @@ public class Main {
 	public static void main(String[] args) throws SlickException { core = new Main(); }
 	public static final int TILESIZE_X=50;
 	public static final int TILESIZE_Y=50;
-	
+
 	public enum Mode{BUILDER,VIEWER};
 	private enum BUILDER{MACH};
-	
+
 	public AppGameContainer agc;
 	public StateFreeGame sfg;
 	public Mode mode;
-	
+
 	private Main() throws SlickException
 	{
 		sfg = new StateFreeGame("Smash Grab"){
@@ -36,12 +36,12 @@ public class Main {
 			public final Vector2i tileSize = new Vector2i(TILESIZE_X,TILESIZE_Y);
 			public TileView tileView;
 			public MessageSystem msys;
-			
+
 			private BUILDER builderCurrent=null;
-			
+
 			@Override
 			public void renderProcess(GameContainer gc, Graphics g) {
-				
+
 				tileView.debugDraw(gc, g);
 				switch(mode)
 				{
@@ -52,7 +52,7 @@ public class Main {
 				case VIEWER:
 					break;
 				}
-				
+
 				msys.render(gc, g);
 			}
 
@@ -67,19 +67,19 @@ public class Main {
 			@Override
 			public void updateProcess(GameContainer gc, int delta) {
 				msys.update(gc, delta);
-				
+
 				Input in = gc.getInput();
-				
+
 				if (in.isKeyPressed(Input.KEY_ESCAPE))
 					promptShutdown();
-				
+
 				switch(mode)
 				{
 				case BUILDER:
 					if (in.isMousePressed(Input.MOUSE_LEFT_BUTTON))
 					{
 						Vector2i v = tileView.resolveClick(in.getMouseX(), in.getMouseY());
-						
+
 						if (v != null)
 						{
 							Tile t = tileView.getTile(v);
@@ -94,17 +94,17 @@ public class Main {
 										t.fill(new MachineGunTower(tileView.cellAbsolutes(v),v,40));
 										break;
 									}
-									
+
 									msys.register(new Message("Built: Machine Gun Tower!",Message.Type.SUCCESS));
 								}
 							}
 						}
 					}
-					
+
 					if (in.isMousePressed(Input.MOUSE_RIGHT_BUTTON))
 					{
 						Vector2i v = tileView.resolveClick(in.getMouseX(), in.getMouseY());
-						
+
 						if (v != null)
 						{
 							Tile t = tileView.getTile(v);
@@ -112,7 +112,7 @@ public class Main {
 							{
 								t.fill(new BlueBlob(tileView.cellAbsolutes(v),10));
 								System.out.println("Click filled "+v.toString()+" with bblob");
-								
+
 							}
 						}
 					}
@@ -120,17 +120,17 @@ public class Main {
 				case VIEWER:
 					break;
 				}
-				
+
 			}
 		};
-		
+
 		agc = new AppGameContainer(sfg);
 		agc.setDisplayMode(800, 600, false);
 		agc.setShowFPS(false);
 		agc.setVerbose(false);
 		agc.start();
 	}
-	
+
 	public void promptShutdown()
 	{
 		//for now, just exit. but later, this will be configurable to display a popup first or something
