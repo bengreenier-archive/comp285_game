@@ -39,6 +39,9 @@ public class Main {
 	//store our static int id's here
 	public static class ID{
 		public static int PAUSED = 0;
+		public static int MAINMENU = 1;
+		public static int BUILD = 2;
+		public static int RUN = 3;
 	}
 	
 	private Main() throws SlickException
