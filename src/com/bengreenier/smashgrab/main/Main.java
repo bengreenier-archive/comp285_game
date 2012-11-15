@@ -5,6 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
 import com.bengreenier.slick.messages.Message;
 import com.bengreenier.slick.messages.MessageSystem;
@@ -19,109 +20,37 @@ public class Main {
 
 	public static Main core;
 	public static void main(String[] args) throws SlickException { core = new Main(); }
+	
+	@Deprecated
 	public static final int TILESIZE_X=50;
+	@Deprecated
 	public static final int TILESIZE_Y=50;
 
+	@Deprecated
 	public enum Mode{BUILDER,VIEWER};
+	@Deprecated
 	private enum BUILDER{MACH};
 
 	public AppGameContainer agc;
-	public StateFreeGame sfg;
+	public StateBasedGame sfg;
 	public Mode mode;
 
+	//store our static int id's here
+	public static class ID{
+		public static int PAUSED = 0;
+	}
+	
 	private Main() throws SlickException
 	{
-		sfg = new StateFreeGame("Smash Grab"){
-
-			public final Vector2i tileSize = new Vector2i(TILESIZE_X,TILESIZE_Y);
-			public TileView tileView;
-			public MessageSystem msys;
-
-			private BUILDER builderCurrent=null;
+		sfg = new StateBasedGame("SmashGrab"){
 
 			@Override
-			public void renderProcess(GameContainer gc, Graphics g) {
-
-				tileView.debugDraw(gc, g);
-				switch(mode)
-				{
-				case BUILDER:
-					tileView.renderAllFilledObjects(gc,g);
-					g.drawString("-- BUILDR MODE --", 20, gc.getHeight()-20);
-					break;
-				case VIEWER:
-					break;
-				}
-
-				msys.render(gc, g);
+			public void initStatesList(GameContainer arg0) throws SlickException {
+				addState(new Paused(ID.PAUSED));
+				enterState(ID.PAUSED);
+				
 			}
-
-			@Override
-			public void initProcess(GameContainer gc) {
-				tileView = new TileView(gc.getWidth()/tileSize.getX(),gc.getHeight()/tileSize.getY(),tileSize.getX(),tileSize.getY());
-				msys = new MessageSystem();
-				mode = Mode.BUILDER;
-				builderCurrent = BUILDER.MACH;
-			}
-
-			@Override
-			public void updateProcess(GameContainer gc, int delta) {
-				msys.update(gc, delta);
-
-				Input in = gc.getInput();
-
-				if (in.isKeyPressed(Input.KEY_ESCAPE))
-					promptShutdown();
-
-				switch(mode)
-				{
-				case BUILDER:
-					if (in.isMousePressed(Input.MOUSE_LEFT_BUTTON))
-					{
-						Vector2i v = tileView.resolveClick(in.getMouseX(), in.getMouseY());
-
-						if (v != null)
-						{
-							Tile t = tileView.getTile(v);
-							if (!t.isFilled())
-							{
-								//populate t with the current selection for tower building, if there is one.
-								if (builderCurrent!=null)
-								{
-									switch (builderCurrent)
-									{
-									case MACH:
-										t.fill(new MachineGunTower(tileView.cellAbsolutes(v),v,40));
-										break;
-									}
-
-									msys.register(new Message("Built: Machine Gun Tower!",Message.Type.SUCCESS));
-								}
-							}
-						}
-					}
-
-					if (in.isMousePressed(Input.MOUSE_RIGHT_BUTTON))
-					{
-						Vector2i v = tileView.resolveClick(in.getMouseX(), in.getMouseY());
-
-						if (v != null)
-						{
-							Tile t = tileView.getTile(v);
-							if (!t.isFilled())
-							{
-								t.fill(new BlueBlob(tileView.cellAbsolutes(v),10));
-								System.out.println("Click filled "+v.toString()+" with bblob");
-
-							}
-						}
-					}
-					break;
-				case VIEWER:
-					break;
-				}
-
-			}
+			
 		};
 
 		agc = new AppGameContainer(sfg);
