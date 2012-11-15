@@ -14,6 +14,7 @@ import com.bengreenier.slick.tiling.TileView;
 import com.bengreenier.slick.util.StateFreeGame;
 import com.bengreenier.slick.util.Vector2i;
 import com.bengreenier.smashgrab.enemies.BlueBlob;
+import com.bengreenier.smashgrab.states.Paused;
 import com.bengreenier.smashgrab.towers.MachineGunTower;
 
 public class Main {
