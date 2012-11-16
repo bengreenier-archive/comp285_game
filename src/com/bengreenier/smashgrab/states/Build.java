@@ -12,7 +12,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.bengreenier.smashgrab.ribbons.Ribbon;
 import com.bengreenier.smashgrab.ribbons.RibbonItem;
+import com.bengreenier.smashgrab.towers.LaserTower;
+import com.bengreenier.smashgrab.towers.MachineGunTower;
+import com.bengreenier.smashgrab.towers.RocketTower;
 
+import com.bengreenier.slick.tiling.Tile;
 import com.bengreenier.slick.tiling.TileView;
 import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
@@ -23,6 +27,7 @@ public class Build implements GameState {
 	private Ribbon ribbon;
 	private TileView tv;
 	private Image mouseSprite;
+	private Class mouseType;
 	private int id;
 	
 	public Build(int id)
@@ -32,6 +37,7 @@ public class Build implements GameState {
 		ribbon = new Ribbon("#3399CC",802,80,0,500);
 		tv = new TileView(16, 12, 50, 50);
 		mouseSprite=null;
+		mouseType=null;
 	}
 	
 	@Override
@@ -81,6 +87,7 @@ public class Build implements GameState {
 				if (arg0 == Input.MOUSE_LEFT_BUTTON && inBounds(arg1,arg2))
 					{
 						start = new Vector2i(arg1,arg2);
+						
 						//bad practice, creating an Image here
 						Image t=null;
 						try {
@@ -91,17 +98,34 @@ public class Build implements GameState {
 						}
 						
 						if (t!=null)
-						localFinalBuildPointer.mouseSprite = t;
+						{
+							localFinalBuildPointer.mouseSprite = t;
+							localFinalBuildPointer.mouseType = MachineGunTower.class;
+						}
 					}
 			}
 			
 			@Override
 			public void mouseReleased(int arg0, int arg1, int arg2)
 			{
-				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null)
+				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null && localFinalBuildPointer.mouseType.equals(MachineGunTower.class))
 				{
 					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite=null;
+					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
+					if (c!=null)
+					{
+						Tile t = localFinalBuildPointer.tv.getTile(c);
+						
+						
+						if (t!=null)
+							if (!t.isFilled())
+							{
+								MachineGunTower mgt = new MachineGunTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
+								t.fill(mgt);
+								localFinalBuildPointer.objects.add(mgt);
+							}
+					}
 				}
 			}
 			
@@ -139,17 +163,34 @@ public class Build implements GameState {
 						}
 						
 						if (t!=null)
-						localFinalBuildPointer.mouseSprite = t;
+						{
+							localFinalBuildPointer.mouseSprite = t;
+							localFinalBuildPointer.mouseType = RocketTower.class;
+						}
 					}
 			}
 			
 			@Override
 			public void mouseReleased(int arg0, int arg1, int arg2)
 			{
-				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null)
+				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null && localFinalBuildPointer.mouseType.equals(RocketTower.class))
 				{
 					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite = null;
+					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
+					if (c!=null)
+					{
+						Tile t = localFinalBuildPointer.tv.getTile(c);
+						
+						
+						if (t!=null)
+							if (!t.isFilled())
+							{
+								RocketTower rt = new RocketTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
+								t.fill(rt);
+								localFinalBuildPointer.objects.add(rt);
+							}
+					}
 				}
 			}
 			
@@ -187,17 +228,35 @@ public class Build implements GameState {
 						}
 						
 						if (t!=null)
-						localFinalBuildPointer.mouseSprite = t;
+						{
+							localFinalBuildPointer.mouseSprite = t;
+							localFinalBuildPointer.mouseType = LaserTower.class;
+						}
+						
 					}
 			}
 			
 			@Override
 			public void mouseReleased(int arg0, int arg1, int arg2)
 			{
-				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null)
+				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null && localFinalBuildPointer.mouseType.equals(LaserTower.class))
 				{
 					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite = null;
+					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
+					if (c!=null)
+					{
+						Tile t = localFinalBuildPointer.tv.getTile(c);
+						
+						
+						if (t!=null)
+							if (!t.isFilled())
+							{
+								LaserTower lt = new LaserTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
+								t.fill(lt);
+								localFinalBuildPointer.objects.add(lt);
+							}
+					}
 				}
 			}
 			

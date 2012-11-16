@@ -10,21 +10,21 @@ import com.bengreenier.slick.util.Renderable;
 import com.bengreenier.slick.util.Vector2i;
 import com.bengreenier.smashgrab.main.Main;
 
-public class MachineGunTower extends AbstractTower {
+public class RocketTower extends AbstractTower {
 
 	private Image image;
 	
-	public MachineGunTower(Vector2i absolutePosition, Vector2i gridPosition, int range) {
+	public RocketTower(Vector2i absolutePosition, Vector2i gridPosition, int range) {
 		super(absolutePosition, gridPosition, range);
 		
 		try {
-			image = new Image("res/MachineGunTower.png");
+			image = new Image("res/RocketTower.png");
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		final MachineGunTower LocalFinalMachineGunTowerPointer = this;
+		final RocketTower LocalFinalMachineGunTowerPointer = this;
 		
 		setVisual(new Renderable(){
 
