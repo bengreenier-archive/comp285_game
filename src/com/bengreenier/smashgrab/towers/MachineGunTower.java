@@ -18,7 +18,7 @@ public class MachineGunTower extends AbstractTower {
 			public void draw(Graphics g) {
 				Color t = g.getColor();
 				g.setColor(Color.red);
-				g.fillRoundRect(getPosition().getX(), getPosition().getY(), Main.TILESIZE_X, Main.TILESIZE_Y, 15);
+				//g.fillRoundRect(getPosition().getX(), getPosition().getY(), Main.TILESIZE_X, Main.TILESIZE_Y, 15);
 				g.setColor(t);
 			}
 
