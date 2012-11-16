@@ -27,6 +27,7 @@ public class Build implements GameState {
 	private Ribbon ribbon;
 	private TileView tv;
 	private Image mouseSprite;
+	@SuppressWarnings("rawtypes")
 	private Class mouseType;
 	private int id;
 	
@@ -113,18 +114,55 @@ public class Build implements GameState {
 					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite=null;
 					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
+					int c_loop=1;
+					while (c == null)
+					{
+						c = localFinalBuildPointer.tv.resolveClick(arg1+(1*c_loop), arg2+(1*c_loop));
+						c_loop++;
+					}
 					if (c!=null)
 					{
-						Tile t = localFinalBuildPointer.tv.getTile(c);
 						
-						
-						if (t!=null)
-							if (!t.isFilled())
+						//damn messy way to fill 4 tiles, and check that they aren't filled first...
+						boolean ok=true;
+						MachineGunTower mgt = new MachineGunTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
+						for (int x=0;x<2;x++)
+							for (int y=0;y<2;y++)
 							{
-								MachineGunTower mgt = new MachineGunTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
-								t.fill(mgt);
-								localFinalBuildPointer.objects.add(mgt);
+								Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
+								
+								Tile t = localFinalBuildPointer.tv.getTile(cell);
+								if (t==null)
+									ok=false;
+								else
+									if (t.isFilled())
+									{
+										ok=false;
+									}
+									
 							}
+						
+						if (ok)
+						{
+							for (int x=0;x<2;x++)
+								for (int y=0;y<2;y++)
+								{
+									Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
+									
+									Tile t = localFinalBuildPointer.tv.getTile(cell);
+									if (t!=null)
+									{
+										if (x==0&&y==0)
+											localFinalBuildPointer.objects.add(mgt);
+										
+										t.fill(mgt);
+									}
+								}
+							
+						}
+						 
+						
+						
 					}
 				}
 			}
@@ -178,18 +216,55 @@ public class Build implements GameState {
 					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite = null;
 					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
+					int c_loop=1;
+					while (c == null)
+					{
+						c = localFinalBuildPointer.tv.resolveClick(arg1+(1*c_loop), arg2+(1*c_loop));
+						c_loop++;
+					}
+					
 					if (c!=null)
 					{
-						Tile t = localFinalBuildPointer.tv.getTile(c);
-						
-						
-						if (t!=null)
-							if (!t.isFilled())
+						//damn messy way to fill 4 tiles, and check that they aren't filled first...
+						boolean ok=true;
+						RocketTower mgt = new RocketTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
+						for (int x=0;x<2;x++)
+							for (int y=0;y<2;y++)
 							{
-								RocketTower rt = new RocketTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
-								t.fill(rt);
-								localFinalBuildPointer.objects.add(rt);
+								Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
+								
+								Tile t = localFinalBuildPointer.tv.getTile(cell);
+								if (t==null)
+									ok=false;
+								else
+									if (t.isFilled())
+									{
+										ok=false;
+									}
+									
 							}
+						
+						if (ok)
+						{
+							for (int x=0;x<2;x++)
+								for (int y=0;y<2;y++)
+								{
+									Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
+									
+									Tile t = localFinalBuildPointer.tv.getTile(cell);
+									if (t!=null)
+									{
+										if (x==0&&y==0)
+											localFinalBuildPointer.objects.add(mgt);
+										
+										t.fill(mgt);
+									}
+								}
+							
+						}
+						 
+						
+					
 					}
 				}
 			}
@@ -244,18 +319,56 @@ public class Build implements GameState {
 					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite = null;
 					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
+					
+					int c_loop=1;
+					while (c == null)
+					{
+						c = localFinalBuildPointer.tv.resolveClick(arg1+(1*c_loop), arg2+(1*c_loop));
+						c_loop++;
+					}
+					
 					if (c!=null)
 					{
-						Tile t = localFinalBuildPointer.tv.getTile(c);
-						
-						
-						if (t!=null)
-							if (!t.isFilled())
+						//damn messy way to fill 4 tiles, and check that they aren't filled first...
+						boolean ok=true;
+						LaserTower mgt = new LaserTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
+						for (int x=0;x<2;x++)
+							for (int y=0;y<2;y++)
 							{
-								LaserTower lt = new LaserTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tv.cellAbsolutes(c),30);
-								t.fill(lt);
-								localFinalBuildPointer.objects.add(lt);
+								Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
+								
+								Tile t = localFinalBuildPointer.tv.getTile(cell);
+								if (t==null)
+									ok=false;
+								else
+									if (t.isFilled())
+									{
+										ok=false;
+									}
+									
 							}
+						
+						if (ok)
+						{
+							for (int x=0;x<2;x++)
+								for (int y=0;y<2;y++)
+								{
+									Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
+									
+									Tile t = localFinalBuildPointer.tv.getTile(cell);
+									if (t!=null)
+									{
+										if (x==0&&y==0)
+											localFinalBuildPointer.objects.add(mgt);
+										
+										t.fill(mgt);
+									}
+								}
+							
+						}
+						 
+						
+					
 					}
 				}
 			}
@@ -279,11 +392,11 @@ public class Build implements GameState {
 		else
 			try{throw new Exception("Ribbon is null");}catch(Exception e){e.printStackTrace();}
 		
-		/*if (tv != null)
+		if (tv != null)
 			tv.debugDraw(arg0, arg2);
 		else
 			try{throw new Exception("TileView is null");}catch(Exception e){e.printStackTrace();}
-		*/
+		
 		for (GameObject o : objects)
 			o.render(arg0, arg2);
 		
