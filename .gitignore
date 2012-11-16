@@ -1,7 +1,7 @@
 # eclipse files #
 #################
-.classpath
 
+.classpath
 .project
 bin/*
 *.class

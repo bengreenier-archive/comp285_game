@@ -1,108 +1,92 @@
-package com.bengreenier.smashgrab.ribbons;
+package com.bengreenier.smashgrab.states;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.InputListener;
-import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.GameState;
+import org.newdawn.slick.state.StateBasedGame;
 
-import com.bengreenier.slick.util.HexColor;
+import com.bengreenier.smashgrab.ribbons.Ribbon;
+import com.bengreenier.smashgrab.ribbons.RibbonItem;
 
-public class Ribbon implements InputListener{
+import com.bengreenier.slick.util.GameObject;
 
-	private Rectangle s;
-	private String color;
-	private ArrayList<RibbonItem> list;
-	private int width;
-	private int height;
-	private int location_x=0;
-	private int location_y=0;
-	private boolean enabled=true;
+public class Build implements GameState {
+
+	private ArrayList<GameObject> objects;
+	private Ribbon ribbon;
+	private int id;
 	
-	public Ribbon(String color,int width,int height)
+	public Build(int id)
 	{
-		this.color = color;
-		this.width = width;
-		this.height = height;
-		
-		s = new Rectangle(0,0,width,height);
-		
-		list = new ArrayList<RibbonItem>();
-		
+		this.id = id;
+		objects = new ArrayList<GameObject>();
+		ribbon = new Ribbon("#A60000",802,80,0,700);
 	}
 	
-	public Ribbon(String color,int width,int height,int locx,int locy)
-	{
-		this.color = color;
-		this.width = width;
-		this.height = height;
-		location_x = locx;
-		location_y = locy;
+	@Override
+	public void enter(GameContainer arg0, StateBasedGame arg1)
+			throws SlickException {
+		Input in = arg0.getInput();
+		in.clearControlPressedRecord();
+		in.clearKeyPressedRecord();
+		in.clearMousePressedRecord();
 		
-		s = new Rectangle(0,0,width,height);
-		
-		list = new ArrayList<RibbonItem>();
-		
-	}
-	
-	public void setLocation(int x,int y)
-	{
-		location_x = x;
-		location_y = y;
-	}
-	
-	public void draw(Graphics g) {
-		
-		Color t = g.getColor();
-		g.setColor(new HexColor(color));
-		s.setLocation(location_x, location_y);
-		g.fill(s);
-		g.setColor(t);
-		
-		for (RibbonItem item :list)
-			item.draw();
-			
-		
-	}
-	
-	
-	
-	public void addRibbonItem(RibbonItem a)
-	{
-		list.add(a);
-		
-		int current_item_index=0;
-		
-		for (RibbonItem item : list)
-		{
-			int r_w = item.getWidth();
-			int r_h = item.getHeight();
-			
-			float posx = location_x+(current_item_index*(width/list.size()))+(width/(2*list.size()))-(0.5f*r_w);
-			float posy = location_y+(0.5f*(height-r_h));
-			
-			//update bounds (for mouseover info).
-			item.updateBounds(posx, posy);
-			
-			current_item_index++;
-		}
-	}
-	
-	
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	@Override
+	public int getID() {
+		return id;
+	}
+
+	@Override
+	public void init(GameContainer arg0, StateBasedGame arg1)
+			throws SlickException {
+		
+		ribbon.addRibbonItem(new RibbonItem(){
+			@Override
+			public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
+				System.out.println("Dragged from "+arg0+","+arg1+" "+arg2+","+arg3);
+			}
+		});
+		
+		
+	}
+
+	@Override
+	public void leave(GameContainer arg0, StateBasedGame arg1)
+			throws SlickException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
+			throws SlickException {
+		if (ribbon!=null)
+			ribbon.draw(arg2);
+		
+		for (GameObject o : objects)
+			o.render(arg0, arg2);
+		
+	}
+
+	@Override
+	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
+			throws SlickException {
+
+		for (GameObject o : objects)
+			o.update(arg0, arg2);
+		
+	}
+	
+	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
-		//System.out.println("Ribbon registered mouseClicked");
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -125,9 +109,7 @@ public class Ribbon implements InputListener{
 
 	@Override
 	public void mouseReleased(int arg0, int arg1, int arg2) {
-		//System.out.println("Ribbon Registered mouseReleased");
-		for (RibbonItem item : list)
-			item.mouseReleased(arg0,arg1,arg2);
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -152,7 +134,7 @@ public class Ribbon implements InputListener{
 	@Override
 	public boolean isAcceptingInput() {
 		// TODO Auto-generated method stub
-		return enabled;
+		return false;
 	}
 
 	@Override
@@ -163,7 +145,7 @@ public class Ribbon implements InputListener{
 
 	@Override
 	public void keyPressed(int arg0, char arg1) {
-		System.out.println("Ribbon registered keyPressed");
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -232,4 +214,5 @@ public class Ribbon implements InputListener{
 		// TODO Auto-generated method stub
 		
 	}
+
 }
