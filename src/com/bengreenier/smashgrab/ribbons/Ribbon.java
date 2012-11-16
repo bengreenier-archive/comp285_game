@@ -107,7 +107,8 @@ public class Ribbon implements InputListener{
 
 	@Override
 	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
+		for (RibbonItem item : list)
+			item.mouseDragged(arg0,arg1,arg2,arg3);
 		
 	}
 
@@ -119,7 +120,8 @@ public class Ribbon implements InputListener{
 
 	@Override
 	public void mousePressed(int arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
+		for (RibbonItem item : list)
+			item.mousePressed(arg0,arg1,arg2);
 		
 	}
 

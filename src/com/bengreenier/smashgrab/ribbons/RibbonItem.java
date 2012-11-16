@@ -25,6 +25,12 @@ public class RibbonItem implements MouseListener{
 	public RibbonItem()
 	{
 		list = new ArrayList<Renderable>();
+		instantiate();
+	}
+	
+	public void instantiate()
+	{
+		//do nothing (override only)
 	}
 
 	public void draw() {
