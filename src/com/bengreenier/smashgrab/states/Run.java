@@ -63,8 +63,8 @@ public class Run implements GameState {
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
 		
-		if (tv!=null)
-		tv.debugDraw(arg0, arg2);
+		//if (tv!=null)
+		//tv.debugDraw(arg0, arg2);
 		
 		for (GameObject o : objects)
 			o.render(arg0, arg2);
