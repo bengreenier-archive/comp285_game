@@ -34,6 +34,9 @@ public class Paused implements GameState {
 		in.clearControlPressedRecord();
 		in.clearKeyPressedRecord();
 		in.clearMousePressedRecord();
+		
+		for (MouseOverArea a : mouseOverArea)
+			a.setAcceptingInput(true);
 	}
 
 	@Override
@@ -46,6 +49,8 @@ public class Paused implements GameState {
 		Input in = arg0.getInput();
 		final GameContainer localFinalGameContainer = arg0;
 		final StateBasedGame localFinalStateBasedGame = arg1;
+		
+		
 		
 		MouseOverArea resume = new MouseOverArea(arg0, new Image("res/resumeButton.PNG"), 300, 200){
 			@Override
@@ -98,7 +103,8 @@ public class Paused implements GameState {
 
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-
+			for (MouseOverArea a : mouseOverArea)
+				a.setAcceptingInput(false);
 	}
 
 	@Override
