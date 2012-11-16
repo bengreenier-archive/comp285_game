@@ -22,78 +22,63 @@ public class RibbonTest {
 			
 			@Override
 			public void initProcess(GameContainer arg0) {
-				r = new Ribbon("#A60000",802,80);
-				RibbonItem item = new RibbonItem();
-				RibbonItem item2 = new RibbonItem();
-				RibbonItem item3 = new RibbonItem();
+				r = new Ribbon("#A60000",802,80,0,100);
+				
+				//configure the ribbon to listen for Input
+				arg0.getInput().addListener(r);
+				
+				
+				//configure the crate and something to do on mouseReleased
+				RibbonItem crate = new RibbonItem(){
+					
+					@Override
+					public void mouseReleased(int arg0, int arg1, int arg2) {
+						if (arg0 == Input.MOUSE_LEFT_BUTTON)
+							if (inBounds(arg1, arg2))
+								System.out.println("Crate Clicked");
+						
+					}
+				};
+				
+				//configure the tile and something to do on mouseReleased
+				RibbonItem tile = new RibbonItem(){
+					
+					@Override
+					public void mouseReleased(int arg0, int arg1, int arg2) {
+						if (arg0 == Input.MOUSE_LEFT_BUTTON)
+							if (inBounds(arg1, arg2))
+								System.out.println("Tile Clicked");
+						
+					}
+				};
+				
+				
+				//try to load our images.
 				try {
 					
-					item.addImageAndResize(new Image("res/crate.png"));
-					item.addRibbonListener(new RibbonListener(){
-
-						@Override
-						public void onNotify(GameContainer gc, RibbonItem item) {
-							Input in = gc.getInput();
-							
-							if (in.isMousePressed(Input.MOUSE_LEFT_BUTTON))
-								if (item.inBounds(in.getMouseX(), in.getMouseY()))
-								{
-									System.out.println("Clicked Me one");
-								}
-							
-							
-						}});
-					
-					item2.addImageAndResize(new Image("res/tile1.png"));
-					item2.addRibbonListener(new RibbonListener(){
-
-						@Override
-						public void onNotify(GameContainer gc, RibbonItem item) {
-							Input in = gc.getInput();
-							
-							if (in.isMousePressed(Input.MOUSE_LEFT_BUTTON))
-								if (item.inBounds(in.getMouseX(), in.getMouseY()))
-								{
-									System.out.println("Clicked Me faggot");
-								}
-							
-						}});
-					item3.addImageAndResize(new Image("res/crate.png"));
-					item3.addRibbonListener(new RibbonListener(){
-
-						@Override
-						public void onNotify(GameContainer gc,RibbonItem item) {
-							Input in = gc.getInput();
-							
-							if (in.isMousePressed(Input.MOUSE_LEFT_BUTTON))
-								if (item.inBounds(in.getMouseX(), in.getMouseY()))
-								{
-									System.out.println("Clicked Me fucker");
-								}
-							
-							
-						}});
+					crate.addImageAndResize(new Image("res/crate.png"));
+					tile.addImageAndResize(new Image("res/tile1.png"));
 					
 				} catch (SlickException e) {
 					e.printStackTrace();
 				}
 				
-				r.addRibbonItem(item);
-				r.addRibbonItem(item2);
-				r.addRibbonItem(item3);
+				
+				//add our create and tile to the ribbon
+				r.addRibbonItem(crate);
+				r.addRibbonItem(tile);
 			}
 
 			@Override
 			public void renderProcess(GameContainer arg0, Graphics arg1) {
 				if (r!=null)
-					r.draw(arg1, 0, 100);
+					r.draw(arg1);//draw the ribbon, once its made.
 				
 			}
 
 			@Override
 			public void updateProcess(GameContainer arg0, int arg1) {
-				if (r!=null)
-					r.handleListeners(arg0);
+				
 			}});
 		
 		agc.setDisplayMode(800, 600, false);
