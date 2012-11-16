@@ -1,21 +1,29 @@
 package com.bengreenier.smashgrab.main;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.bengreenier.slick.tiling.TileView;
 import com.bengreenier.smashgrab.states.Build;
 import com.bengreenier.smashgrab.states.MainMenu;
 import com.bengreenier.smashgrab.states.Paused;
+import com.bengreenier.smashgrab.states.Run;
+
+import com.bengreenier.slick.util.GameObject;
 
 public class Main {
 
 	public static Main core;
-	public static void main(String[] args) throws SlickException { core = new Main(); }
+	public static void main(String[] args) throws SlickException { core = new Main(); core.agc.start(); }
 
 	public AppGameContainer agc;
 	public StateBasedGame sfg;
+	public TileView tv;
+	public ArrayList<GameObject> tileObjects;
 	
 	//store our static int id's here
 	public static class ID{
@@ -27,6 +35,9 @@ public class Main {
 	
 	private Main() throws SlickException
 	{
+		tv = new TileView(16, 12, 50, 50);
+		tileObjects = new ArrayList<GameObject>();
+		
 		sfg = new StateBasedGame("SmashGrab"){
 
 			@Override
@@ -34,6 +45,7 @@ public class Main {
 				//addState(new Paused(ID.PAUSED));
 				//addState(new MainMenu(ID.MAINMENU));
 				addState(new Build(ID.BUILD));
+				addState(new Run(ID.RUN));
 				enterState(ID.BUILD);
 				
 			}
@@ -44,7 +56,6 @@ public class Main {
 		agc.setDisplayMode(800, 600, false);
 		agc.setShowFPS(false);
 		agc.setVerbose(false);
-		agc.start();
 	}
 
 	public void promptShutdown()

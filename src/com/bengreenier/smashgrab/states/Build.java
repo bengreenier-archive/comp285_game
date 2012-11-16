@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.ribbons.Ribbon;
 import com.bengreenier.smashgrab.ribbons.RibbonItem;
 import com.bengreenier.smashgrab.towers.LaserTower;
@@ -34,16 +35,19 @@ public class Build implements GameState {
 	public Build(int id)
 	{
 		this.id = id;
-		objects = new ArrayList<GameObject>();
+		objects = Main.core.tileObjects;
 		ribbon = new Ribbon("#3399CC",802,80,0,500);
-		tv = new TileView(16, 12, 50, 50);
 		mouseSprite=null;
 		mouseType=null;
+		tv = Main.core.tv;//do this on enter too
 	}
 	
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
+		tv = Main.core.tv;//do this in init too
+		objects = Main.core.tileObjects;
+		
 		Input in = arg0.getInput();
 		in.clearControlPressedRecord();
 		in.clearKeyPressedRecord();
@@ -61,6 +65,7 @@ public class Build implements GameState {
 			throws SlickException {
 		
 		final Build localFinalBuildPointer = this;
+		final StateBasedGame localFinalStateBasedGame = arg1;
 		
 		arg0.getInput().addListener(ribbon);
 		
@@ -109,10 +114,11 @@ public class Build implements GameState {
 			@Override
 			public void mouseReleased(int arg0, int arg1, int arg2)
 			{
+				if (localFinalBuildPointer.mouseType!=null)
 				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null && localFinalBuildPointer.mouseType.equals(MachineGunTower.class))
 				{
-					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite=null;
+					localFinalBuildPointer.mouseType = null;
 					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
 					int c_loop=1;
 					while (c == null)
@@ -211,10 +217,11 @@ public class Build implements GameState {
 			@Override
 			public void mouseReleased(int arg0, int arg1, int arg2)
 			{
+				if (localFinalBuildPointer.mouseType!=null)
 				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null && localFinalBuildPointer.mouseType.equals(RocketTower.class))
 				{
-					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite = null;
+					localFinalBuildPointer.mouseType = null;
 					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
 					int c_loop=1;
 					while (c == null)
@@ -314,10 +321,11 @@ public class Build implements GameState {
 			@Override
 			public void mouseReleased(int arg0, int arg1, int arg2)
 			{
+				if (localFinalBuildPointer.mouseType!=null)
 				if (arg0 == Input.MOUSE_LEFT_BUTTON && start!=null && localFinalBuildPointer.mouseType.equals(LaserTower.class))
 				{
-					System.out.println("you moved from "+start+" to "+new Vector2i(arg1,arg2));
 					localFinalBuildPointer.mouseSprite = null;
+					localFinalBuildPointer.mouseType = null;
 					Vector2i c = localFinalBuildPointer.tv.resolveClick(arg1, arg2);
 					
 					int c_loop=1;
@@ -375,13 +383,33 @@ public class Build implements GameState {
 			
 		});
 		
+		ribbon.addRibbonItem(new RibbonItem(){
+			@Override
+			public void instantiate()
+			{
+				try {
+					addImageAndResize(new Image("res/BuildGo.png"));
+				} catch (SlickException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+			@Override
+			public void mousePressed(int arg0, int arg1, int arg2) {
+				if (Input.MOUSE_LEFT_BUTTON == arg0 && inBounds(arg1,arg2))
+				localFinalStateBasedGame.enterState(Main.ID.RUN);
+			}
+		});
+		
 	}
 
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
-		// TODO Auto-generated method stub
-		
+		Main.core.tv = tv;
+		Main.core.tileObjects = objects;
 	}
 
 	@Override
