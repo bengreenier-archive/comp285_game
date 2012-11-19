@@ -39,6 +39,7 @@ public class Main {
 		tileSystem = new TileSystem(16, 12, new Tile(50, 50,0));
 		tileObjects = new ArrayList<GameObject>();
 		
+		
 		sfg = new StateBasedGame("SmashGrab"){
 
 			@Override
