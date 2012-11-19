@@ -16,6 +16,7 @@ import com.bengreenier.smashgrab.ribbons.RibbonItem;
 import com.bengreenier.smashgrab.towers.LaserTower;
 import com.bengreenier.smashgrab.towers.MachineGunTower;
 import com.bengreenier.smashgrab.towers.RocketTower;
+import com.bengreenier.smashgrab.util.TileUserData;
 
 import com.bengreenier.slick.tiling.TileSystem.Tile;
 import com.bengreenier.slick.tiling.TileSystem;
@@ -70,7 +71,6 @@ public class Build implements GameState {
 		arg0.getInput().addListener(ribbon);
 		
 		
-		
 		ribbon.addRibbonItem(new RibbonItem(){
 			
 			private Vector2i start;
@@ -120,14 +120,9 @@ public class Build implements GameState {
 					localFinalBuildPointer.mouseSprite=null;
 					localFinalBuildPointer.mouseType = null;
 					Vector2i c=null;
-					try {
-						c = localFinalBuildPointer.tileSystem.locate(arg1, arg2);
-					} catch (Exception e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
-					int c_loop=1;
-					while (c == null)
+					
+					int c_loop=0;
+					while (c == null && c_loop<5)
 					{
 						try {
 							c = localFinalBuildPointer.tileSystem.locate(arg1+(1*c_loop), arg2+(1*c_loop));
@@ -139,64 +134,29 @@ public class Build implements GameState {
 					}
 					if (c!=null)
 					{
-						
-						//damn messy way to fill 4 tiles, and check that they aren't filled first...
-						boolean ok=true;
-						MachineGunTower mgt=null;
+						Vector2i rev_loc = null;
 						try {
-							mgt = new MachineGunTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tileSystem.reverseLocate(c),30);
+							rev_loc = tileSystem.reverseLocate(c);
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						for (int x=0;x<2;x++)
-							for (int y=0;y<2;y++)
-							{
-								Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
-								
-								Tile t=null;
-								try {
-									t = localFinalBuildPointer.tileSystem.getTile(cell);
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								if (t==null)
-									ok=false;
-								else
-									if (t.isFilled())
-									{
-										ok=false;
-									}
-									
-							}
-						
-						if (ok)
+						if (rev_loc != null)
 						{
-							for (int x=0;x<2;x++)
-								for (int y=0;y<2;y++)
-								{
-									Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
-									
-									Tile t=null;
-									try {
-										t = localFinalBuildPointer.tileSystem.getTile(cell);
-									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									if (t!=null)
-									{
-										if (x==0&&y==0)
-											localFinalBuildPointer.objects.add(mgt);
-										
-										t.setUserData(mgt);
-									}
-								}
-							
+							MachineGunTower tower = new MachineGunTower(new Vector2i(arg1,arg2),rev_loc,30);
+							Tile t = null;
+							try {
+								t = localFinalBuildPointer.tileSystem.getTile(c);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (t!=null)
+							{
+								t.setUserData(new TileUserData(tower));
+								t.setFilled(true);
+							}
 						}
-						 
-						
 						
 					}
 				}
@@ -272,64 +232,29 @@ public class Build implements GameState {
 					
 					if (c!=null)
 					{
-						//damn messy way to fill 4 tiles, and check that they aren't filled first...
-						boolean ok=true;
-						RocketTower mgt=null;
+						Vector2i rev_loc = null;
 						try {
-							mgt = new RocketTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tileSystem.reverseLocate(c),30);
+							rev_loc = tileSystem.reverseLocate(c);
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						for (int x=0;x<2;x++)
-							for (int y=0;y<2;y++)
-							{
-								Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
-								
-								Tile t=null;
-								try {
-									t = localFinalBuildPointer.tileSystem.getTile(cell);
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								if (t==null)
-									ok=false;
-								else
-									if (t.isFilled())
-									{
-										ok=false;
-									}
-									
-							}
-						
-						if (ok)
+						if (rev_loc != null)
 						{
-							for (int x=0;x<2;x++)
-								for (int y=0;y<2;y++)
-								{
-									Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
-									
-									Tile t=null;
-									try {
-										t = localFinalBuildPointer.tileSystem.getTile(cell);
-									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									if (t!=null)
-									{
-										if (x==0&&y==0)
-											localFinalBuildPointer.objects.add(mgt);
-										
-										t.setUserData(mgt);
-									}
-								}
-							
+							RocketTower tower = new RocketTower(new Vector2i(arg1,arg2),rev_loc,30);
+							Tile t = null;
+							try {
+								t = localFinalBuildPointer.tileSystem.getTile(c);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (t!=null)
+							{
+								t.setUserData(new TileUserData(tower));
+								t.setFilled(true);
+							}
 						}
-						 
-						
-					
 					}
 				}
 			}
@@ -406,64 +331,29 @@ public class Build implements GameState {
 					
 					if (c!=null)
 					{
-						//damn messy way to fill 4 tiles, and check that they aren't filled first...
-						boolean ok=true;
-						LaserTower mgt=null;
+						Vector2i rev_loc = null;
 						try {
-							mgt = new LaserTower(new Vector2i(arg1,arg2),localFinalBuildPointer.tileSystem.reverseLocate(c),30);
+							rev_loc = tileSystem.reverseLocate(c);
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						for (int x=0;x<2;x++)
-							for (int y=0;y<2;y++)
-							{
-								Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
-								
-								Tile t=null;
-								try {
-									t = localFinalBuildPointer.tileSystem.getTile(cell);
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								if (t==null)
-									ok=false;
-								else
-									if (t.isFilled())
-									{
-										ok=false;
-									}
-									
-							}
-						
-						if (ok)
+						if (rev_loc != null)
 						{
-							for (int x=0;x<2;x++)
-								for (int y=0;y<2;y++)
-								{
-									Vector2i cell = Vector2i.add(c, new Vector2i(x,y));
-									
-									Tile t=null;
-									try {
-										t = localFinalBuildPointer.tileSystem.getTile(cell);
-									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									if (t!=null)
-									{
-										if (x==0&&y==0)
-											localFinalBuildPointer.objects.add(mgt);
-										
-										t.setUserData(mgt);
-									}
-								}
-							
+							LaserTower tower = new LaserTower(new Vector2i(arg1,arg2),rev_loc,30);
+							Tile t = null;
+							try {
+								t = localFinalBuildPointer.tileSystem.getTile(c);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (t!=null)
+							{
+								t.setUserData(new TileUserData(tower));
+								t.setFilled(true);
+							}
 						}
-						 
-						
-					
 					}
 				}
 			}
@@ -511,6 +401,12 @@ public class Build implements GameState {
 			tileSystem.draw(0, 0);
 		else
 			try{throw new Exception("tileSystem is null");}catch(Exception e){e.printStackTrace();}
+		
+		for (Tile o : tileSystem.getTiles())
+			if (o!=null)
+				if (((TileUserData) o.getUserData())!=null)
+					if (((TileUserData) o.getUserData()).object!=null)
+						((TileUserData) o.getUserData()).object.render(arg0, arg2);
 		
 		for (GameObject o : objects)
 			o.render(arg0, arg2);

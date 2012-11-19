@@ -111,7 +111,7 @@ public class Run implements GameState {
 							if (path.getX(a) == o.getPosition().getX() && path.getY(a) == o.getPosition().getY())
 								if (a<path.getLength()-1)
 									o.setPosition(new Vector2i(path.getX(a+1),path.getY(a+1)));
-			*/
+				 */
 	}
 	
 	@Override
