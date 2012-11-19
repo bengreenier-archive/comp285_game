@@ -1,27 +1,44 @@
 package com.bengreenier.smashgrab.enemies;
 
-import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.util.pathfinding.Path;
+import org.newdawn.slick.util.pathfinding.Path.Step;
 
 import com.bengreenier.slick.util.GameObject;
-import com.bengreenier.slick.util.Renderable;
 import com.bengreenier.slick.util.Vector2i;
 
 public abstract class AbstractEnemy extends GameObject {
 
-	protected Circle body;
-	private Renderable visual;
+
+	protected Path path;
+	protected Step step;
+	protected Step next_step;
+	protected float angle;
 	
-	public AbstractEnemy(Vector2i position,int radius) {
+	public AbstractEnemy(Vector2i position,float angle,Path path) {
 		super(position);
-		this.body = new Circle(getPosition().getX(),getPosition().getY(),radius);
+		this.path = path;
+		this.angle = angle;
+		if (path!=null)
+		{
+			if (path.getLength()>0)
+				this.step = path.getStep(0);
+			if (path.getLength()>1)
+				this.next_step = path.getStep(1);
+		}
 	}
 
-	public Renderable getVisual() {
-		return visual;
-	}
-
-	public void setVisual(Renderable visual) {
-		this.visual = visual;
+	protected void update_step()
+	{
+		if (path!=null)
+			for (int i=0;i<path.getLength();i++)
+			{
+				if (path.getStep(i).equals(step) && i+1 < path.getLength())
+					step = path.getStep(i+1);
+				if (i+2 < path.getLength())
+					next_step = path.getStep(i+2);
+				else
+					next_step = null;
+			}
 	}
 
 }

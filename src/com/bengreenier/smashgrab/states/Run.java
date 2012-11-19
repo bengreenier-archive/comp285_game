@@ -44,7 +44,7 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		
+		objects.add(new Boy(new Vector2i(),path));
 	}
 
 	@Override
@@ -98,21 +98,9 @@ public class Run implements GameState {
 		
 		//this is where we make our objects follow the path.
 		for (GameObject o : objects)
-		{
-			if (path!=null)
-				for (int i=0;i<path.getLength();i++)
-						if (o instanceof Boy)
-							if (((Boy)o).getStep()==null)
-								((Boy)o).setStep(path.getStep(0));
-							else
-								if (path.getStep(i).equals(((Boy)o).getStep()))
-									if (i+1<path.getLength())
-										((Boy)o).setStep(path.getStep(i+1));
-		
 			o.update(arg0, arg2);
-		}
 		
-		objects.add(new Boy(new Vector2i()));
+		
 		
 	}
 	
