@@ -13,7 +13,9 @@ import org.newdawn.slick.util.pathfinding.Path;
 import com.bengreenier.slick.tiling.TileSystem;
 import com.bengreenier.slick.tiling.TileSystem.Tile;
 import com.bengreenier.slick.util.GameObject;
+import com.bengreenier.slick.util.Vector2i;
 
+import com.bengreenier.smashgrab.enemies.Boy;
 import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.util.TileUserData;
 
@@ -92,6 +94,25 @@ public class Run implements GameState {
 				if (((TileUserData) o.getUserData())!=null)
 					if (((TileUserData) o.getUserData()).object!=null)
 						((TileUserData) o.getUserData()).object.update(arg0, arg2);
+		
+		
+		//this is where we make our objects follow the path.
+		for (GameObject o : objects)
+		{
+			if (path!=null)
+				for (int i=0;i<path.getLength();i++)
+						if (o instanceof Boy)
+							if (((Boy)o).getStep()==null)
+								((Boy)o).setStep(path.getStep(0));
+							else
+								if (path.getStep(i).equals(((Boy)o).getStep()))
+									if (i+1<path.getLength())
+										((Boy)o).setStep(path.getStep(i+1));
+		
+			o.update(arg0, arg2);
+		}
+		
+		objects.add(new Boy(new Vector2i()));
 		
 	}
 	
