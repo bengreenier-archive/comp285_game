@@ -8,30 +8,28 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.pathfinding.AStarPathFinder;
-import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.Path;
 
 import com.bengreenier.slick.tiling.TileSystem;
+import com.bengreenier.slick.tiling.TileSystem.Tile;
 import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
 
 import com.bengreenier.smashgrab.enemies.BlueBlob;
 import com.bengreenier.smashgrab.main.Main;
+import com.bengreenier.smashgrab.util.TileUserData;
 
 public class Run implements GameState {
 
 	private int id;
 	private TileSystem tileSystem;
-	private ArrayList<GameObject> tileObjects;
-	private ArrayList<GameObject> objects;
 	private Path path;
+	private ArrayList<GameObject> objects;
 	
 	public Run(int id)
 	{
 		this.id = id;
 		tileSystem = Main.core.tileSystem;
-		tileObjects = Main.core.tileObjects;
 		objects = new ArrayList<GameObject>();
 	}
 	
@@ -39,7 +37,7 @@ public class Run implements GameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		tileSystem = Main.core.tileSystem;
-		tileObjects = Main.core.tileObjects;
+		
 		Input in = arg0.getInput();
 		in.clearControlPressedRecord();
 		in.clearKeyPressedRecord();
@@ -66,7 +64,6 @@ public class Run implements GameState {
 	public void leave(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		Main.core.tileSystem = tileSystem;
-		Main.core.tileObjects = tileObjects;
 	}
 
 	@Override
@@ -77,8 +74,11 @@ public class Run implements GameState {
 			//tileSystem.draw(0,0);
 
 		
-		for (GameObject o : tileObjects)
-			o.render(arg0, arg2);
+		for (Tile o : tileSystem.getTiles())
+			if (o!=null)
+				if (((TileUserData) o.getUserData())!=null)
+					if (((TileUserData) o.getUserData()).object!=null)
+						((TileUserData) o.getUserData()).object.render(arg0, arg2);
 		
 		for (GameObject o : objects)
 			o.render(arg0, arg2);
@@ -89,8 +89,11 @@ public class Run implements GameState {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
-		for (GameObject o : tileObjects)
-			o.update(arg0, arg2);
+		for (Tile o : tileSystem.getTiles())
+			if (o!=null)
+				if (((TileUserData) o.getUserData())!=null)
+					if (((TileUserData) o.getUserData()).object!=null)
+						((TileUserData) o.getUserData()).object.update(arg0, arg2);
 		
 		for (int i = 0; i<10; i++)
 		{
