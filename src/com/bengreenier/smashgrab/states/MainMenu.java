@@ -17,12 +17,12 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.bengreenier.smashgrab.main.Main;
 
-public class Paused implements GameState {
+public class MainMenu implements GameState {
 	
 	private UnicodeFont fnt;
 	private int id;
 	private ArrayList<MouseOverArea> mouseOverArea;
-	public Paused(int id){
+	public MainMenu(int id){
 		this.id = id;
 		mouseOverArea = new ArrayList<MouseOverArea>();
 	}
@@ -34,9 +34,6 @@ public class Paused implements GameState {
 		in.clearControlPressedRecord();
 		in.clearKeyPressedRecord();
 		in.clearMousePressedRecord();
-		
-		for (MouseOverArea a : mouseOverArea)
-			a.setAcceptingInput(true);
 	}
 
 	@Override
@@ -50,23 +47,21 @@ public class Paused implements GameState {
 		final GameContainer localFinalGameContainer = arg0;
 		final StateBasedGame localFinalStateBasedGame = arg1;
 		
-		
-		
-		MouseOverArea resume = new MouseOverArea(arg0, new Image("res/resumeButton.PNG"), 300, 200){
+		MouseOverArea play = new MouseOverArea(arg0, new Image("res/resumeButton.PNG"), 300, 200){
 			@Override
 			public void mouseReleased(int button, int mx, int my){
 				if(button == Input.MOUSE_LEFT_BUTTON){
 					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
-						System.out.println("Resume released");
+						System.out.println("Play released");
 					}
 				}
 			}
 		};
-		resume.setMouseOverImage(new Image("res/resumeButtonDown.PNG"));
-		resume.setMouseDownImage(new Image("res/resumeButtonPressed.PNG"));
-		mouseOverArea.add(resume);
+		play.setMouseOverImage(new Image("res/resumeButtonDown.PNG"));
+		play.setMouseDownImage(new Image("res/resumeButtonPressed.PNG"));
+		mouseOverArea.add(play);
 		
-		MouseOverArea mainMenu = new MouseOverArea(arg0, new Image("res/mainMenu.PNG"), 300, 300){
+		MouseOverArea b = new MouseOverArea(arg0, new Image("res/mainMenu.PNG"), 300, 300){
 			@Override
 			public void mouseReleased(int button, int mx, int my){
 				if(button == Input.MOUSE_LEFT_BUTTON){
@@ -76,11 +71,11 @@ public class Paused implements GameState {
 				}
 			}
 		};
-		mainMenu.setMouseOverImage(new Image("res/mainMenuDown.PNG"));
-		mainMenu.setMouseDownImage(new Image("res/mainMenuPressed.PNG"));
-		mouseOverArea.add(mainMenu);
+		b.setMouseOverImage(new Image("res/mainMenuDown.PNG"));
+		b.setMouseDownImage(new Image("res/mainMenuPressed.PNG"));
+		mouseOverArea.add(b);
 		
-		MouseOverArea exitButton = new MouseOverArea(arg0, new Image("res/exitButton.PNG"), 300, 400){
+		MouseOverArea c = new MouseOverArea(arg0, new Image("res/exitButton.PNG"), 300, 400){
 			@Override
 			public void mouseReleased(int button, int mx, int my){
 				if(button == Input.MOUSE_LEFT_BUTTON){
@@ -90,9 +85,9 @@ public class Paused implements GameState {
 				}
 			}
 		};
-		exitButton.setMouseOverImage(new Image("res/exitButtonHovered.PNG"));
-		exitButton.setMouseDownImage(new Image("res/exitButtonPressed.PNG"));
-		mouseOverArea.add(exitButton);
+		c.setMouseOverImage(new Image("res/exitButtonHovered.PNG"));
+		c.setMouseDownImage(new Image("res/exitButtonPressed.PNG"));
+		mouseOverArea.add(c);
 		
 		fnt = new UnicodeFont("res/VINERITC.TTF", 70, true, false);
 		fnt.addAsciiGlyphs();
@@ -103,8 +98,7 @@ public class Paused implements GameState {
 
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-			for (MouseOverArea a : mouseOverArea)
-				a.setAcceptingInput(false);
+
 	}
 
 	@Override
@@ -115,7 +109,7 @@ public class Paused implements GameState {
 		arg2.setColor(Color.blue);
 		if(fnt!=null)
 			arg2.setFont(fnt);
-		arg2.drawString("Paused", 270, 100);
+		arg2.drawString("Main Menu", 270, 100);
 		arg2.setColor(reset);
 	}
 
