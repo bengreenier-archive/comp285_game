@@ -9,12 +9,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.pathfinding.Path;
+import org.newdawn.slick.util.pathfinding.Path.Step;
 
 import com.bengreenier.slick.tiling.TileSystem;
 import com.bengreenier.slick.tiling.TileSystem.Tile;
-import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
 
+import com.bengreenier.smashgrab.enemies.AbstractEnemy;
 import com.bengreenier.smashgrab.enemies.Boy;
 import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.util.TileUserData;
@@ -24,13 +25,13 @@ public class Run implements GameState {
 	private int id;
 	private TileSystem tileSystem;
 	private Path path;
-	private ArrayList<GameObject> objects;
+	private ArrayList<AbstractEnemy> objects;
 	
 	public Run(int id)
 	{
 		this.id = id;
 		tileSystem = Main.core.tileSystem;
-		objects = new ArrayList<GameObject>();
+		objects = new ArrayList<AbstractEnemy>();
 	}
 	
 	@Override
@@ -44,7 +45,7 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		objects.add(new Boy(new Vector2i(),path));
+		objects.add(new Boy(new Vector2i(),5,path,50));
 	}
 
 	@Override
@@ -80,7 +81,7 @@ public class Run implements GameState {
 					if (((TileUserData) o.getUserData()).object!=null)
 						((TileUserData) o.getUserData()).object.render(arg0, arg2);
 		
-		for (GameObject o : objects)
+		for (AbstractEnemy o : objects)
 			o.render(arg0, arg2);
 		
 	}
@@ -97,8 +98,30 @@ public class Run implements GameState {
 		
 		
 		//this is where we make our objects follow the path.
-		for (GameObject o : objects)
-			o.update(arg0, arg2);
+		for (AbstractEnemy o : objects)
+		{
+			Vector2i pos = o.getPosition();
+			Path pa = o.getPath();
+			if (pa!=null)
+			{
+				
+			}
+			
+			
+			/*Step st = o.getStep();
+			Step nst = null;
+			if (pa!=null)
+				for (int i=0;i>pa.getLength();i++)
+					if (st!=null)
+						if (st.equals(pa.getStep(i)))
+							if (i+1< pa.getLength())
+								nst = pa.getStep(i+1);
+			//setup configured. begin motion.
+			if (nst!=null)
+			{
+				System.out.println("more motion");
+			}*/
+		}
 		
 		
 		
