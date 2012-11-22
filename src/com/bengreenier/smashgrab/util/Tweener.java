@@ -28,6 +28,15 @@ public class Tweener {
 	 */
 	public Vector2i getNextPoint(int delta)
 	{
+		
 		return new Vector2i();
+	}
+	
+	public boolean isFinished()
+	{
+		if (pos.equals(point))
+			return true;
+		else
+			return false;
 	}
 }

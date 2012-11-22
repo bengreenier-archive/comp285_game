@@ -18,6 +18,7 @@ import com.bengreenier.slick.util.Vector2i;
 import com.bengreenier.smashgrab.enemies.AbstractEnemy;
 import com.bengreenier.smashgrab.enemies.Boy;
 import com.bengreenier.smashgrab.main.Main;
+import com.bengreenier.smashgrab.util.EnemyUserData;
 import com.bengreenier.smashgrab.util.TileUserData;
 
 public class Run implements GameState {
@@ -104,7 +105,55 @@ public class Run implements GameState {
 			Path pa = o.getPath();
 			if (pa!=null)
 			{
+				//first run through, instantiate userData
+				if (o.getUserData() == null)
+					o.setUserData(new EnemyUserData());
 				
+				//configure the starting userData values
+				if (((EnemyUserData)o.getUserData()).current == null)
+					((EnemyUserData)o.getUserData()).current = pa.getStep(0);
+				
+				//""
+				if (((EnemyUserData)o.getUserData()).next == null && pa.getLength()>1)
+					((EnemyUserData)o.getUserData()).next = pa.getStep(1);
+					
+				//this method doesn't work, perhaps the reverlocate api is off (not coded right). (yeah, this is off)
+				Vector2i current_grid_location=null;
+				
+				
+				
+				try {
+					if (((EnemyUserData)o.getUserData()).next != null)
+					{
+						System.out.println(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
+						current_grid_location = tileSystem.reverseLocate(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}
+				
+				
+				if (current_grid_location!=null)
+				{
+					System.out.println(current_grid_location);
+					if (current_grid_location.equals(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY())))
+						System.out.println("You're in grid "+current_grid_location);
+				}
+				
+				Vector2i motion = new Vector2i();
+				
+				if (((EnemyUserData)o.getUserData()).next.getX() > ((EnemyUserData)o.getUserData()).current.getX())
+					motion.add(new Vector2i(1,0));
+				else if (((EnemyUserData)o.getUserData()).next.getX() < ((EnemyUserData)o.getUserData()).current.getX())
+					motion.add(new Vector2i(-1,0));
+				
+				if (((EnemyUserData)o.getUserData()).next.getY() > ((EnemyUserData)o.getUserData()).current.getY())
+					motion.add(new Vector2i(0,1));
+				else if (((EnemyUserData)o.getUserData()).next.getY() < ((EnemyUserData)o.getUserData()).current.getY())
+					motion.add(new Vector2i(0,1));
+				
+				o.setPosition(Vector2i.add(o.getPosition(), motion));
 			}
 			
 			
