@@ -46,7 +46,7 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		objects.add(new Boy(new Vector2i(),5,path,50));
+		objects.add(new Boy(new Vector2i(0,4),5,path,50));
 	}
 
 	@Override
@@ -117,30 +117,37 @@ public class Run implements GameState {
 				if (((EnemyUserData)o.getUserData()).next == null && pa.getLength()>1)
 					((EnemyUserData)o.getUserData()).next = pa.getStep(1);
 					
-				//this method doesn't work, perhaps the reverlocate api is off (not coded right). (yeah, this is off)
-				Vector2i current_grid_location=null;
 				
 				
-				
-				try {
 					if (((EnemyUserData)o.getUserData()).next != null)
 					{
-						System.out.println(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
-						current_grid_location = tileSystem.reverseLocate(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
+						Vector2i location=null;
+						try {
+							//System.out.println("position "+o.getPosition());
+							location = tileSystem.locate(o.getPosition());
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						if (location!=null)
+						{
+							//System.out.println(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
+							if (new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()).equals(location))
+									System.out.println("matched! update current/next now");
+							/*for (int i=0;i<pa.getLength();i++)
+										if (pa.getStep(i).equals(((EnemyUserData)o.getUserData()).next))
+											if (pa.getLength()<i+1)
+											{
+												((EnemyUserData)o.getUserData()).current = pa.getStep(i);
+												((EnemyUserData)o.getUserData()).next = pa.getStep(i+1);
+											}*/
+												
+						}
+						//System.out.println(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
+						//current_grid_location = tileSystem.reverseLocate(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
 					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				}
 				
-				
-				if (current_grid_location!=null)
-				{
-					System.out.println(current_grid_location);
-					if (current_grid_location.equals(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY())))
-						System.out.println("You're in grid "+current_grid_location);
-				}
-				
+								
 				Vector2i motion = new Vector2i();
 				
 				if (((EnemyUserData)o.getUserData()).next.getX() > ((EnemyUserData)o.getUserData()).current.getX())

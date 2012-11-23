@@ -13,6 +13,7 @@ public class EnemyUserData {
 
 	public Step current;
 	public Step next;
+	public int cid,nid;
 	
 	public EnemyUserData() {
 		current = null;
