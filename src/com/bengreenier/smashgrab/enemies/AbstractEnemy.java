@@ -10,18 +10,13 @@ import com.bengreenier.slick.util.Vector2i;
 public abstract class AbstractEnemy extends GameObject {
 
 
-	protected Path path;
-
 	protected float angle;
 	protected int speed;
-	protected int tilesize;
 	
-	public AbstractEnemy(Vector2i position,float angle,int speed,Path path,int tilesize) {
+	public AbstractEnemy(Vector2i position,float angle,int speed) {
 		super(position);
-		this.path = path;
 		this.angle = angle;
 		this.speed = speed;
-		this.tilesize = tilesize;
 		
 	}
 
@@ -50,13 +45,7 @@ public abstract class AbstractEnemy extends GameObject {
 			}
 	}*/
 
-	public Path getPath() {
-		return path;
-	}
-
-	public void setPath(Path path) {
-		this.path = path;
-	}
+	
 
 	public int getSpeed() {
 		return speed;
@@ -69,19 +58,9 @@ public abstract class AbstractEnemy extends GameObject {
 	@Override
 	public void update(GameContainer gc,int delta)
 	{
-		//the update simply calls the private navigate_path() method
-		navigate_path(delta);
+		//the update simply does nothing
 	}
 	
-	protected int delta_count=0;
-	protected void navigate_path(int delta)
-	{
-		delta_count+=delta;
-		if (delta_count>getSpeed())
-		{
-			delta_count = 0;
-			
-		}
-	}
+	
 
 }

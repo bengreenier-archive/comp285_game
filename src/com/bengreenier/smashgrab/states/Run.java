@@ -19,6 +19,7 @@ import com.bengreenier.smashgrab.enemies.AbstractEnemy;
 import com.bengreenier.smashgrab.enemies.Boy;
 import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.util.EnemyUserData;
+import com.bengreenier.smashgrab.util.PathWrapper;
 import com.bengreenier.smashgrab.util.TileUserData;
 
 public class Run implements GameState {
@@ -46,7 +47,8 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		objects.add(new Boy(new Vector2i(0,4),5,path,50));
+		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
+		objects.add(new Boy(new Vector2i(0,4),500,userData));
 	}
 
 	@Override
@@ -87,10 +89,12 @@ public class Run implements GameState {
 		
 	}
 
+	
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
+		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)
 				if (((TileUserData) o.getUserData())!=null)
@@ -98,57 +102,27 @@ public class Run implements GameState {
 						((TileUserData) o.getUserData()).object.update(arg0, arg2);
 		
 		
-		//this is where we make our objects follow the path.
-		for (AbstractEnemy o : objects)
+		for (AbstractEnemy e : objects)
 		{
-			Vector2i pos = o.getPosition();
-			Path pa = o.getPath();
-			if (pa!=null)
+			if (e.getUserData() instanceof EnemyUserData)
 			{
-				//first run through, instantiate userData
-				if (o.getUserData() == null)
-					o.setUserData(new EnemyUserData());
-				
-				//configure the starting userData values
-				if (((EnemyUserData)o.getUserData()).current == null)
-					((EnemyUserData)o.getUserData()).current = pa.getStep(0);
-				
-				//""
-				if (((EnemyUserData)o.getUserData()).next == null && pa.getLength()>1)
-					((EnemyUserData)o.getUserData()).next = pa.getStep(1);
+				if (e.getUserData()!=null)
+				{
+					((EnemyUserData)e.getUserData()).delta_count+=arg2;
 					
-				
-				
-					if (((EnemyUserData)o.getUserData()).next != null)
-					{
-						Vector2i location=null;
-						try {
-							//System.out.println("position "+o.getPosition());
-							location = tileSystem.locate(o.getPosition());
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (location!=null)
+					EnemyUserData ud = (EnemyUserData) e.getUserData();
+					PathWrapper pw = ud.pw;
+					if (pw.hasNextStep() && ud.delta_count>=e.getSpeed())
 						{
-							//System.out.println(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
-							if (new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()).equals(location))
-									System.out.println("matched! update current/next now");
-							/*for (int i=0;i<pa.getLength();i++)
-										if (pa.getStep(i).equals(((EnemyUserData)o.getUserData()).next))
-											if (pa.getLength()<i+1)
-											{
-												((EnemyUserData)o.getUserData()).current = pa.getStep(i);
-												((EnemyUserData)o.getUserData()).next = pa.getStep(i+1);
-											}*/
-												
+							e.setPosition(pw.getNextLocation());
+							((EnemyUserData)e.getUserData()).delta_count = 0;
 						}
-						//System.out.println(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
-						//current_grid_location = tileSystem.reverseLocate(new Vector2i(((EnemyUserData)o.getUserData()).next.getX(),((EnemyUserData)o.getUserData()).next.getY()));
-					}
-				
+						
+				}
+			}
+		}
 								
-				Vector2i motion = new Vector2i();
+			/*	Vector2i motion = new Vector2i();
 				
 				if (((EnemyUserData)o.getUserData()).next.getX() > ((EnemyUserData)o.getUserData()).current.getX())
 					motion.add(new Vector2i(1,0));
@@ -161,25 +135,8 @@ public class Run implements GameState {
 					motion.add(new Vector2i(0,1));
 				
 				o.setPosition(Vector2i.add(o.getPosition(), motion));
-			}
+			*/
 			
-			
-			/*Step st = o.getStep();
-			Step nst = null;
-			if (pa!=null)
-				for (int i=0;i>pa.getLength();i++)
-					if (st!=null)
-						if (st.equals(pa.getStep(i)))
-							if (i+1< pa.getLength())
-								nst = pa.getStep(i+1);
-			//setup configured. begin motion.
-			if (nst!=null)
-			{
-				System.out.println("more motion");
-			}*/
-		}
-		
-		
 		
 	}
 	

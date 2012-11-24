@@ -1,11 +1,11 @@
 package com.bengreenier.smashgrab.util;
 
 import org.newdawn.slick.util.pathfinding.Path;
+import org.newdawn.slick.util.pathfinding.Path.Step;
 
 import com.bengreenier.slick.util.Vector2i;
 
-@SuppressWarnings("serial")
-public class PathWrapper extends Path {
+public class PathWrapper {
 
 	private int current_step_id=0;
 	private int tile_size_x,tile_size_y;
@@ -22,6 +22,12 @@ public class PathWrapper extends Path {
 	{
 		current_step_id += 1;
 		return path.getStep(current_step_id);
+	}
+	
+	public Vector2i getNextLocation()
+	{
+		current_step_id += 1;
+		return new Vector2i(tile_size_x * path.getStep(current_step_id).getX(),tile_size_y * path.getStep(current_step_id).getY());
 	}
 	
 	public int getStepId()
@@ -44,7 +50,7 @@ public class PathWrapper extends Path {
 	
 	public boolean hasNextStep()
 	{
-		if (path.getLength()<current_step_id+1)
+		if (path.getLength()>current_step_id+1)
 			return true;
 		else
 			return false;
@@ -78,5 +84,10 @@ public class PathWrapper extends Path {
 			return true;
 		else
 			return false;
+	}
+	
+	public void rollback()
+	{
+		current_step_id -= 1;
 	}
 }
