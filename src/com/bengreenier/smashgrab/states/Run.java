@@ -47,8 +47,8 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-		objects.add(new Boy(new Vector2i(0,4),500,userData));
+		
+		
 	}
 
 	@Override
@@ -94,6 +94,7 @@ public class Run implements GameState {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
+		burst_spawn(arg2);
 		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)
@@ -138,6 +139,19 @@ public class Run implements GameState {
 			*/
 			
 		
+	}
+	
+	private int burst_delta_count = 0;
+	private void burst_spawn(int delta)
+	{
+		burst_delta_count += delta;
+		if (burst_delta_count>(850 + (int)(Math.random() * ((2000 - 850) + 1))))//randomized within a range 850-1400
+		{
+			burst_delta_count=0;
+			//this is spawning code
+			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
+			objects.add(new Boy(new Vector2i(0,0),500,userData));
+		}
 	}
 	
 	@Override
