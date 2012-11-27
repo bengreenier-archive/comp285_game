@@ -150,7 +150,7 @@ public class Run implements GameState {
 			burst_delta_count=0;
 			//this is spawning code
 			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Boy(new Vector2i(0,0),500,userData));
+			objects.add(new Boy(new Vector2i(0,0),(int)(Math.random() * ((1000 - 500) + 1)),userData));//randomized speed within a range 1000-500
 		}
 	}
 	
