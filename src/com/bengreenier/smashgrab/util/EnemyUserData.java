@@ -12,6 +12,7 @@ public class EnemyUserData {
 
 	public PathWrapper pw;
 	public int delta_count;
+	public Tweener tweener;
 	
 	public EnemyUserData() {
 		pw = null;
@@ -20,6 +21,17 @@ public class EnemyUserData {
 	
 	public EnemyUserData(PathWrapper pw) {
 		this.pw = pw;
+		this.delta_count = 0;
+	}
+	
+	public EnemyUserData(Tweener tweener) {
+		this.tweener = tweener;
+		this.delta_count = 0;
+	}
+	
+	public EnemyUserData(PathWrapper pw,Tweener tweener) {
+		this.pw = pw;
+		this.tweener = tweener;
 		this.delta_count = 0;
 	}
 

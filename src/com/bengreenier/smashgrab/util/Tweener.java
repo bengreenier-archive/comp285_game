@@ -11,15 +11,13 @@ import com.bengreenier.slick.util.Vector2i;
  */
 public class Tweener {
 	
-	private Vector2i pos,point;
-	private int time;
-	private int rtot=0;
+	private Vector2i pos,point,res;
 	
-	public Tweener(Vector2i pos, Vector2i point, int time)
+	public Tweener(Vector2i pos, Vector2i point)
 	{
 		this.pos = pos;
 		this.point = point;
-		this.time = time;
+		this.res = pos;
 	}
 	
 	/**
@@ -27,24 +25,21 @@ public class Tweener {
 	 * @param delta update time
 	 * @return position
 	 */
-	public Vector2i getNextPoint(int delta)
+	public Vector2i getNextPoint()
 	{
-		rtot+=delta;
-		//pos = rtot/time of Vector2i.subtract(point,pos); 
-		Vector2i sub = Vector2i.subtract(point, pos);
-		pos = new Vector2i(sub.getX()*(time/rtot),sub.getY()*(time/rtot));
-		
-		return pos;
+		if (pos.getX() < point.getX() ) res.add(new Vector2i(1,0));
+		if (pos.getX() > point.getX() ) res.add(new Vector2i(-1,0));
+		if (pos.getY() < point.getY() ) res.add(new Vector2i(0,1));
+		if (pos.getY() > point.getY() ) res.add(new Vector2i(0,-1));
+		return res;
 	}
 	
-	public static void main(String args[])
+	public boolean isFinished()
 	{
-		Tweener t = new Tweener(new Vector2i(0,0),new Vector2i(50,0),2000);
-		Vector2i pt = t.getNextPoint(5);
-		while(pt.getX() != 50)
-		{
-			System.out.println(pt);
-			pt = t.getNextPoint(5);
-		}
+		if (point.getX() == res.getX() && point.getY() == res.getY())
+			return true;
+		else
+			return false;
 	}
+	
 }

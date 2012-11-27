@@ -9,7 +9,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.pathfinding.Path;
-import org.newdawn.slick.util.pathfinding.Path.Step;
 
 import com.bengreenier.slick.tiling.TileSystem;
 import com.bengreenier.slick.tiling.TileSystem.Tile;
@@ -21,6 +20,7 @@ import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.util.EnemyUserData;
 import com.bengreenier.smashgrab.util.PathWrapper;
 import com.bengreenier.smashgrab.util.TileUserData;
+import com.bengreenier.smashgrab.util.Tweener;
 
 public class Run implements GameState {
 
@@ -113,9 +113,20 @@ public class Run implements GameState {
 					
 					EnemyUserData ud = (EnemyUserData) e.getUserData();
 					PathWrapper pw = ud.pw;
-					if (pw.hasNextStep() && ud.delta_count>=e.getSpeed())
-						{
-							e.setPosition(pw.getNextLocation());
+					
+					
+					//something inside here causes it to be off by 1 tile at the end
+					if (pw.hasNextStep() && ud.delta_count>=e.getSpeed()) {
+							if (ud.tweener==null) {
+								ud.tweener = new Tweener(e.getPosition(),pw.getNextLocation());
+							}
+							
+							if (!ud.tweener.isFinished())
+								e.setPosition(ud.tweener.getNextPoint());
+							else
+								ud.tweener = null;
+							
+							
 							((EnemyUserData)e.getUserData()).delta_count = 0;
 						}
 						
@@ -150,7 +161,7 @@ public class Run implements GameState {
 			burst_delta_count=0;
 			//this is spawning code
 			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Boy(new Vector2i(0,0),(int)(Math.random() * ((1000 - 500) + 1)),userData));//randomized speed within a range 1000-500
+			objects.add(new Boy(new Vector2i(0,0),5,userData));//(int)(Math.random() * ((1000 - 500) + 1)),userData));//randomized speed within a range 1000-500
 		}
 	}
 	
