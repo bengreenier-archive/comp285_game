@@ -6,6 +6,7 @@ import org.newdawn.slick.util.pathfinding.Path.Step;
 
 import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
+import com.bengreenier.smashgrab.towers.AbstractTower;
 
 public abstract class AbstractEnemy extends GameObject {
 
@@ -20,32 +21,12 @@ public abstract class AbstractEnemy extends GameObject {
 		
 	}
 
-	/**
-	 * cycles stepping info. internal access only.
-	 */
-	/*protected void update_step()
+	public void interact(AbstractTower t)
 	{
-		//System.out.println("update_step");
-		
-		if (path!=null)
-			for (int i=0;i<path.getLength();i++)
-			{
-				if (path.getStep(i).equals(step) && i+1 < path.getLength())
-					step = path.getStep(i+1);
-				if (i+2 < path.getLength())
-				{
-					next_step = path.getStep(i+2);
-					return;
-				}
-				else
-				{
-					//System.out.println("nulling");
-					next_step = null;
-				}
-			}
-	}*/
-
-	
+		//this is where the last calculations go. 
+		//find the distance between t and this, and if that distance < t.getRange decrease some life.
+		//decreasing life must be visually represented
+	}
 
 	public int getSpeed() {
 		return speed;

@@ -135,7 +135,7 @@ public class Run implements GameState {
 			}
 		}
 								
-			
+			interactObjects();
 		
 	}
 	
@@ -149,6 +149,17 @@ public class Run implements GameState {
 			//this is spawning code
 			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
 			objects.add(new Boy(new Vector2i(0,0),(int)(Math.random() * ((10 - 2) + 1)),userData));//randomized speed within a range 1000-500
+		}
+	}
+	
+	private void interactObjects()
+	{
+		for (AbstractEnemy e : objects)
+		{
+			for (Tile t : tileSystem.getTiles())
+			{
+				e.interact(((TileUserData) t.getUserData()).object);
+			}
 		}
 	}
 	

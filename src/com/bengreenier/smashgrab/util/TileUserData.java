@@ -1,6 +1,6 @@
 package com.bengreenier.smashgrab.util;
 
-import com.bengreenier.slick.util.GameObject;
+import com.bengreenier.smashgrab.towers.AbstractTower;
 
 /**
  * small storage class, defining what we store within a TileSystem's 
@@ -10,14 +10,14 @@ import com.bengreenier.slick.util.GameObject;
  *
  */
 public class TileUserData {
-	public GameObject object;
+	public AbstractTower object;
 	
 	public TileUserData()
 	{
 		this.object = null;
 	}
 	
-	public TileUserData(GameObject object)
+	public TileUserData(AbstractTower object)
 	{
 		this.object = object;
 	}
