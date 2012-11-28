@@ -116,16 +116,17 @@ public class Run implements GameState {
 					
 					
 					//something inside here causes it to be off by 1 tile at the end
-					if (pw.hasNextStep() && ud.delta_count>=e.getSpeed()) {
-							if (ud.tweener==null) {
+					if (ud.delta_count>=e.getSpeed()) {
+							if (pw.hasNextStep() && ud.tweener==null) {
 								ud.tweener = new Tweener(e.getPosition(),pw.getNextLocation());
 							}
 							
-							if (!ud.tweener.isFinished())
-								e.setPosition(ud.tweener.getNextPoint());
-							else
-								ud.tweener = null;
-							
+							if (ud.tweener != null){
+								if (!ud.tweener.isFinished())
+									e.setPosition(ud.tweener.getNextPoint());
+								else
+									ud.tweener = null;
+							}
 							
 							((EnemyUserData)e.getUserData()).delta_count = 0;
 						}
@@ -134,20 +135,6 @@ public class Run implements GameState {
 			}
 		}
 								
-			/*	Vector2i motion = new Vector2i();
-				
-				if (((EnemyUserData)o.getUserData()).next.getX() > ((EnemyUserData)o.getUserData()).current.getX())
-					motion.add(new Vector2i(1,0));
-				else if (((EnemyUserData)o.getUserData()).next.getX() < ((EnemyUserData)o.getUserData()).current.getX())
-					motion.add(new Vector2i(-1,0));
-				
-				if (((EnemyUserData)o.getUserData()).next.getY() > ((EnemyUserData)o.getUserData()).current.getY())
-					motion.add(new Vector2i(0,1));
-				else if (((EnemyUserData)o.getUserData()).next.getY() < ((EnemyUserData)o.getUserData()).current.getY())
-					motion.add(new Vector2i(0,1));
-				
-				o.setPosition(Vector2i.add(o.getPosition(), motion));
-			*/
 			
 		
 	}
@@ -161,7 +148,7 @@ public class Run implements GameState {
 			burst_delta_count=0;
 			//this is spawning code
 			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Boy(new Vector2i(0,0),5,userData));//(int)(Math.random() * ((1000 - 500) + 1)),userData));//randomized speed within a range 1000-500
+			objects.add(new Boy(new Vector2i(0,0),(int)(Math.random() * ((10 - 2) + 1)),userData));//randomized speed within a range 1000-500
 		}
 	}
 	

@@ -12,12 +12,14 @@ import com.bengreenier.slick.util.Vector2i;
 public class Tweener {
 	
 	private Vector2i pos,point,res;
+	private boolean wasJustDone;
 	
 	public Tweener(Vector2i pos, Vector2i point)
 	{
 		this.pos = pos;
 		this.point = point;
 		this.res = pos;
+		this.wasJustDone = false;
 	}
 	
 	/**
@@ -35,8 +37,14 @@ public class Tweener {
 	}
 	
 	public boolean isFinished()
-	{
+	{	
 		if (point.getX() == res.getX() && point.getY() == res.getY())
+			if (!wasJustDone)
+				{
+					wasJustDone=true;
+					return false;
+				}
+			else
 			return true;
 		else
 			return false;
