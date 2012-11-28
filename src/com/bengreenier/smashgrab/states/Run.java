@@ -1,6 +1,6 @@
 package com.bengreenier.smashgrab.states;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -27,13 +27,13 @@ public class Run implements GameState {
 	private int id;
 	private TileSystem tileSystem;
 	private Path path;
-	private ArrayList<AbstractEnemy> objects;
+	private CopyOnWriteArrayList<AbstractEnemy> objects;
 	
 	public Run(int id)
 	{
 		this.id = id;
 		tileSystem = Main.core.tileSystem;
-		objects = new ArrayList<AbstractEnemy>();
+		objects = new CopyOnWriteArrayList<AbstractEnemy>();
 	}
 	
 	@Override
@@ -158,7 +158,14 @@ public class Run implements GameState {
 		{
 			for (Tile t : tileSystem.getTiles())
 			{
-				e.interact(((TileUserData) t.getUserData()).object);
+				if (((TileUserData) t.getUserData()) != null)
+					if (((TileUserData) t.getUserData()).object != null)
+						e.interact(((TileUserData) t.getUserData()).object);
+			}
+			
+			if (e.isDead())
+			{
+				objects.remove(e);
 			}
 		}
 	}

@@ -20,7 +20,7 @@ public class MachineGunTower extends AbstractTower {
 			e.printStackTrace();
 		}
 		
-		
+		setDamage(10);
 		setVisual(null);
 	}
 

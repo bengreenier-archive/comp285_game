@@ -18,6 +18,7 @@ public class Boy extends AbstractEnemy {
 			e.printStackTrace();
 		}
 		setUserData(userData);
+		this.life = 100;
 	}
 	
 	@Override

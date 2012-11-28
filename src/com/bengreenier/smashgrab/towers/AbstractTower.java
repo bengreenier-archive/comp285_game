@@ -1,6 +1,5 @@
 package com.bengreenier.smashgrab.towers;
 
-import org.newdawn.slick.geom.Circle;
 
 import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Renderable;
@@ -10,13 +9,13 @@ public abstract class AbstractTower extends GameObject {
 
 	private Vector2i gridPosition;
 	private Renderable visual;
-	private Circle range;
+	private int range=0,damage=0;
 	
 	public AbstractTower(Vector2i absolutePosition,Vector2i gridPosition,int range)
 	{
 		super(absolutePosition);
 		this.gridPosition=gridPosition;
-		this.range = new Circle(getPosition().getX(),getPosition().getY(),range);
+		this.range = range;
 	}
 
 	public Renderable getVisual() {
@@ -27,16 +26,25 @@ public abstract class AbstractTower extends GameObject {
 		this.visual = visual;
 	}
 
-	public Circle getRange() {
+	public int getRange() {
 		return range;
 	}
 
 	public void setRange(int range) {
-		this.range = new Circle(getPosition().getX(),getPosition().getY(),range);
+		this.range = range;
 	}
 	
 	public Vector2i getGridPosition() {
 		return gridPosition;
 	}
+	
+	public int getDamage() {
+		return damage;
+	}
+	
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+	
 	
 }

@@ -1,8 +1,6 @@
 package com.bengreenier.smashgrab.enemies;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.util.pathfinding.Path;
-import org.newdawn.slick.util.pathfinding.Path.Step;
 
 import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
@@ -13,6 +11,8 @@ public abstract class AbstractEnemy extends GameObject {
 
 	protected float angle;
 	protected int speed;
+	protected int life;
+	protected boolean dead=false;
 	
 	public AbstractEnemy(Vector2i position,float angle,int speed) {
 		super(position);
@@ -20,12 +20,31 @@ public abstract class AbstractEnemy extends GameObject {
 		this.speed = speed;
 		
 	}
+	
+	public boolean isDead()
+	{
+		return dead;
+	}
 
 	public void interact(AbstractTower t)
 	{
 		//this is where the last calculations go. 
 		//find the distance between t and this, and if that distance < t.getRange decrease some life.
 		//decreasing life must be visually represented
+		Vector2i d  = Vector2i.subtract(t.getPosition(),getPosition());
+		d.setX(Math.abs(d.getX()));
+		d.setY(Math.abs(d.getY()));
+		double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
+		if (distance < t.getRange())
+		{
+			life-=t.getDamage();
+		}
+		
+		if (life<=0)
+		{
+			System.out.println("dead");
+			dead=true;
+		}
 	}
 
 	public int getSpeed() {
@@ -43,5 +62,4 @@ public abstract class AbstractEnemy extends GameObject {
 	}
 	
 	
-
 }
