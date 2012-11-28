@@ -31,6 +31,8 @@ public class Boy extends AbstractEnemy {
 	public void render(GameContainer arg0, Graphics arg1) {
 		if (image!=null)
 			image.draw(getPosition().getX(), getPosition().getY());
+		if (lifeRibbon != null)
+			lifeRibbon.draw(getPosition().getX(), getPosition().getY());
 	}
 
 	

@@ -1,9 +1,11 @@
 package com.bengreenier.smashgrab.enemies;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 
 import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
+import com.bengreenier.smashgrab.ribbons.LifeRibbon;
 import com.bengreenier.smashgrab.towers.AbstractTower;
 
 public abstract class AbstractEnemy extends GameObject {
@@ -13,11 +15,13 @@ public abstract class AbstractEnemy extends GameObject {
 	protected int speed;
 	protected int life;
 	protected boolean dead=false;
+	protected LifeRibbon lifeRibbon;
 	
 	public AbstractEnemy(Vector2i position,float angle,int speed) {
 		super(position);
 		this.angle = angle;
 		this.speed = speed;
+		this.lifeRibbon = new LifeRibbon(Color.green,100);
 		
 	}
 	
@@ -37,6 +41,8 @@ public abstract class AbstractEnemy extends GameObject {
 		double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
 		if (distance < t.getRange())
 		{
+			if (lifeRibbon!=null)
+				lifeRibbon.setHealth(lifeRibbon.getHealth()-t.getDamage());
 			life-=t.getDamage();
 		}
 		
