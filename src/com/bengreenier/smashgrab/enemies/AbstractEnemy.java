@@ -34,16 +34,17 @@ public abstract class AbstractEnemy extends GameObject {
 	{
 		//this is where the last calculations go. 
 		//find the distance between t and this, and if that distance < t.getRange decrease some life.
-		//decreasing life must be visually represented
+		//decreasing life must be visually represented <LifeRibbon>
 		Vector2i d  = Vector2i.subtract(t.getPosition(),getPosition());
 		d.setX(Math.abs(d.getX()));
 		d.setY(Math.abs(d.getY()));
 		double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
-		if (distance < t.getRange())
+		if (distance <= t.getRange())
 		{
 			if (lifeRibbon!=null)
 				lifeRibbon.setHealth(lifeRibbon.getHealth()-t.getDamage());
 			life-=t.getDamage();
+			System.out.println("life = "+life);
 		}
 		
 		if (life<=0)

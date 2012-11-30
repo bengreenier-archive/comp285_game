@@ -11,6 +11,7 @@ public class LifeRibbon {
 	public LifeRibbon(Color start,int health) {
 		this.start = start;
 		this.fullhealth = health;
+		this.health = health;
 		this.width = 30;
 		this.height = 10;
 	}
@@ -23,9 +24,10 @@ public class LifeRibbon {
 	public void draw(int x,int y) {
 		Graphics g = new Graphics();
 		
-		g.setColor(start.darker(health/fullhealth));
+		g.setColor(Color.gray);
 		g.drawRect(x, y, width, height);
-		g.fillRect(x, y, width, height);
+		g.setColor(start);
+		g.fillRect(x, y, width*(health/fullhealth), height);
 		
 		Graphics.setCurrent(g);//swap to this buffer, essentially
 	}

@@ -2,6 +2,7 @@ package com.bengreenier.smashgrab.states;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -219,7 +220,7 @@ public class Build implements GameState {
 						e1.printStackTrace();
 					}
 					int c_loop=1;
-					while (c == null)
+					while (c == null && c_loop<5)
 					{
 						try {
 							c = localFinalBuildPointer.tileSystem.locate(arg1+(1*c_loop), arg2+(1*c_loop));
@@ -318,7 +319,7 @@ public class Build implements GameState {
 					}
 					
 					int c_loop=1;
-					while (c == null)
+					while (c == null && c_loop<5)
 					{
 						try {
 							c = localFinalBuildPointer.tileSystem.locate(arg1+(1*c_loop), arg2+(1*c_loop));
@@ -392,15 +393,23 @@ public class Build implements GameState {
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
+		
+		//draw our grid
+				Color t = arg2.getColor();
+				arg2.setColor(Color.gray);
+				for (int i=0;i<tileSystem.getWidthInTiles();i++)
+					for (int j=0;j<tileSystem.getHeightInTiles();j++)
+					{
+						arg2.drawRect(i*50, j*50, 50, 50);
+					}
+				arg2.setColor(t);
+				
+		
 		if (ribbon!=null)
 			ribbon.draw(arg2);
 		else
 			try{throw new Exception("Ribbon is null");}catch(Exception e){e.printStackTrace();}
 		
-		if (tileSystem != null)
-			tileSystem.draw(0, 0);
-		else
-			try{throw new Exception("tileSystem is null");}catch(Exception e){e.printStackTrace();}
 		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)

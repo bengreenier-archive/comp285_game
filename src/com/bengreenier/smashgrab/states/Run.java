@@ -74,9 +74,6 @@ public class Run implements GameState {
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
 		
-		if (tileSystem!=null)
-			tileSystem.draw(0,0);
-
 		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)
@@ -133,9 +130,22 @@ public class Run implements GameState {
 						
 				}
 			}
+			
+			//interactions
+			for (Tile t : tileSystem.getTiles())
+			{
+				if (((TileUserData) t.getUserData()) != null)
+					if (((TileUserData) t.getUserData()).object != null)
+						e.interact(((TileUserData) t.getUserData()).object);
+			}
+			
+			if (e.isDead())
+			{
+				objects.remove(e);
+			}
 		}
 								
-			interactObjects();
+			
 		
 	}
 	
@@ -152,23 +162,7 @@ public class Run implements GameState {
 		}
 	}
 	
-	private void interactObjects()
-	{
-		for (AbstractEnemy e : objects)
-		{
-			for (Tile t : tileSystem.getTiles())
-			{
-				if (((TileUserData) t.getUserData()) != null)
-					if (((TileUserData) t.getUserData()).object != null)
-						e.interact(((TileUserData) t.getUserData()).object);
-			}
-			
-			if (e.isDead())
-			{
-				objects.remove(e);
-			}
-		}
-	}
+
 	
 	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {

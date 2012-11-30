@@ -36,7 +36,9 @@ public class Main {
 	
 	private Main() throws SlickException
 	{
-		tileSystem = new TileSystem(16, 12, new Tile(50, 50,0));
+		tileSystem = new TileSystem(16, 10, new Tile(50, 50,0));
+		
+		
 		tileObjects = new ArrayList<GameObject>();
 		
 		

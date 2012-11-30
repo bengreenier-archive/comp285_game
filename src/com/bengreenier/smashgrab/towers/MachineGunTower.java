@@ -21,6 +21,7 @@ public class MachineGunTower extends AbstractTower {
 		}
 		
 		setDamage(10);
+		setRange(50);//this is silly, as i override the passed range, which really shouldn't be passed. fix it.
 		setVisual(null);
 	}
 
