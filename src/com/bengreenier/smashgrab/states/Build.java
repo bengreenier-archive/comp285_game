@@ -154,8 +154,14 @@ public class Build implements GameState {
 							}
 							if (t!=null)
 							{
-								t.setUserData(new TileUserData(tower));
 								t.setFilled(true);
+								if (tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1)!=null)
+								{
+								t.setUserData(new TileUserData(tower));
+								}else
+								{
+									t.setFilled(false);
+								}
 							}
 						}
 						
@@ -252,8 +258,14 @@ public class Build implements GameState {
 							}
 							if (t!=null)
 							{
-								t.setUserData(new TileUserData(tower));
 								t.setFilled(true);
+								if (tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1)!=null)
+								{
+								t.setUserData(new TileUserData(tower));
+								}else
+								{
+									t.setFilled(false);
+								}
 							}
 						}
 					}
@@ -341,6 +353,7 @@ public class Build implements GameState {
 						}
 						if (rev_loc != null)
 						{
+							
 							LaserTower tower = new LaserTower(new Vector2i(arg1,arg2),rev_loc,30);
 							Tile t = null;
 							try {
@@ -351,8 +364,14 @@ public class Build implements GameState {
 							}
 							if (t!=null)
 							{
-								t.setUserData(new TileUserData(tower));
 								t.setFilled(true);
+								if (tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1)!=null)
+								{
+								t.setUserData(new TileUserData(tower));
+								}else
+								{
+									t.setFilled(false);
+								}
 							}
 						}
 					}
@@ -432,6 +451,7 @@ public class Build implements GameState {
 
 		for (GameObject o : objects)
 			o.update(arg0, arg2);
+		
 		
 	}
 	
