@@ -6,6 +6,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import com.bengreenier.slick.util.Vector2i;
+import com.bengreenier.smashgrab.main.Main;
 
 public class MachineGunTower extends AbstractTower {
 
@@ -21,7 +22,8 @@ public class MachineGunTower extends AbstractTower {
 		}
 		
 		setDamage(10);
-		setRange(50);//this is silly, as i override the passed range, which really shouldn't be passed. fix it.
+		setRange((2*Main.TILESIZE)+Main.TILESIZE/2);//this is silly, as i override the passed range, which really shouldn't be passed. fix it.
+		setCooldown(500);
 		setVisual(null);
 	}
 
@@ -30,6 +32,9 @@ public class MachineGunTower extends AbstractTower {
 	public void render(GameContainer gc, Graphics g) {
 		if (image!=null)
 			image.draw(getGridPosition().getX(), getGridPosition().getY());
+		
+		
+		g.drawOval(getGridPosition().getX()+25-(getRange()), getGridPosition().getY()+25-(getRange()), getRange()*2, getRange()*2);
 	}
 
 	@Override

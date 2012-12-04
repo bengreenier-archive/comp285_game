@@ -30,8 +30,10 @@ public abstract class AbstractEnemy extends GameObject {
 		return dead;
 	}
 
-	public void interact(AbstractTower t)
+	/*private int delta_count=0;
+	public void interact(AbstractTower t,int delta)
 	{
+		delta_count+=delta;
 		//this is where the last calculations go. 
 		//find the distance between t and this, and if that distance < t.getRange decrease some life.
 		//decreasing life must be visually represented <LifeRibbon>
@@ -39,12 +41,13 @@ public abstract class AbstractEnemy extends GameObject {
 		d.setX(Math.abs(d.getX()));
 		d.setY(Math.abs(d.getY()));
 		double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
-		if (distance <= t.getRange())
+		if (distance <= t.getRange() && delta_count>= t.getCooldown())
 		{
+			delta_count=0;
 			if (lifeRibbon!=null)
 				lifeRibbon.setHealth(lifeRibbon.getHealth()-t.getDamage());
 			life-=t.getDamage();
-			System.out.println("life = "+life);
+			System.out.println("life = "+life+"   "+lifeRibbon.getHealth());
 		}
 		
 		if (life<=0)
@@ -52,8 +55,15 @@ public abstract class AbstractEnemy extends GameObject {
 			System.out.println("dead");
 			dead=true;
 		}
-	}
+	}*/
 
+	public void applyDamage(int damage) {
+		System.out.println("doing damage "+damage+" to "+this+" who had health "+lifeRibbon.getHealth());
+		lifeRibbon.setHealth(lifeRibbon.getHealth()-damage);
+		if (lifeRibbon.getHealth()<=0)
+			dead=true;
+	}
+	
 	public int getSpeed() {
 		return speed;
 	}

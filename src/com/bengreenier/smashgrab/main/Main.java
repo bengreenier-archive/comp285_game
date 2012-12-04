@@ -20,7 +20,7 @@ public class Main {
 
 	public static Main core;
 	public static void main(String[] args) throws SlickException { core = new Main(); core.agc.start(); }
-
+	
 	public AppGameContainer agc;
 	public StateBasedGame sfg;
 	public TileSystem tileSystem;
@@ -34,9 +34,11 @@ public class Main {
 		public static int RUN = 3;
 	}
 	
+	public static final int TILESIZE = 50;
+	
 	private Main() throws SlickException
 	{
-		tileSystem = new TileSystem(16, 10, new Tile(50, 50,0));
+		tileSystem = new TileSystem(16, 10, new Tile(TILESIZE, TILESIZE,0));
 		
 		
 		tileObjects = new ArrayList<GameObject>();

@@ -25,10 +25,10 @@ public class LifeRibbon {
 		Graphics g = new Graphics();
 		
 		g.setColor(Color.gray);
-		g.drawRect(x, y, width, height);
+		g.drawRect(x, y, fullhealth, height);
 		g.setColor(start);
-		g.fillRect(x, y, width*(health/fullhealth), height);
-		
+		g.fillRect(x, y, health, height);
+		//System.out.println(width*(health/fullhealth));
 		Graphics.setCurrent(g);//swap to this buffer, essentially
 	}
 	

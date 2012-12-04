@@ -1,5 +1,6 @@
 package com.bengreenier.smashgrab.states;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.GameContainer;
@@ -16,6 +17,7 @@ import com.bengreenier.slick.util.Vector2i;
 
 import com.bengreenier.smashgrab.enemies.AbstractEnemy;
 import com.bengreenier.smashgrab.enemies.Boy;
+import com.bengreenier.smashgrab.enemies.Still;
 import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.util.EnemyUserData;
 import com.bengreenier.smashgrab.util.PathWrapper;
@@ -47,8 +49,8 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		
-		
+		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
+		objects.add(new Boy(new Vector2i(0,0),8,userData));
 	}
 
 	@Override
@@ -91,7 +93,16 @@ public class Run implements GameState {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
-		burst_spawn(arg2);
+		//burst_spawn(arg2);
+		
+		
+		
+		/*if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
+		{
+			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
+			objects.add(new Still(new Vector2i(arg0.getInput().getMouseX(),arg0.getInput().getMouseY()),8,userData));
+		}*/
+			
 		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)
@@ -131,13 +142,6 @@ public class Run implements GameState {
 				}
 			}
 			
-			//interactions
-			for (Tile t : tileSystem.getTiles())
-			{
-				if (((TileUserData) t.getUserData()) != null)
-					if (((TileUserData) t.getUserData()).object != null)
-						e.interact(((TileUserData) t.getUserData()).object);
-			}
 			
 			if (e.isDead())
 			{
@@ -145,7 +149,28 @@ public class Run implements GameState {
 			}
 		}
 								
-			
+		for (Tile t : tileSystem.getTiles())
+		{
+			if (((TileUserData) t.getUserData()) != null)
+				if (((TileUserData) t.getUserData()).object != null)
+				{
+					//find dudes in range
+					ArrayList<AbstractEnemy> inRange = new ArrayList<AbstractEnemy>();
+					for (AbstractEnemy e : objects)
+					{
+						
+						Vector2i d  = Vector2i.subtract(Vector2i.add(((TileUserData)t.getUserData()).object.getGridPosition(), new Vector2i(25,25)),Vector2i.add(e.getPosition(),new Vector2i(25,25)));
+						d.setX(Math.abs(d.getX()));
+						d.setY(Math.abs(d.getY()));
+						double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
+						if (distance <= ((TileUserData)t.getUserData()).object.getRange())
+							inRange.add(e);
+						
+					}
+					//doDamage to dudes in range
+					((TileUserData)t.getUserData()).object.doDamage(inRange, arg2);
+				}
+		}
 		
 	}
 	
@@ -158,7 +183,7 @@ public class Run implements GameState {
 			burst_delta_count=0;
 			//this is spawning code
 			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Boy(new Vector2i(0,0),(int)(Math.random() * ((10 - 2) + 1)),userData));//randomized speed within a range 1000-500
+			objects.add(new Boy(new Vector2i(0,0),8,userData));//(int)(Math.random() * ((7 - 2) + 1)),userData));//randomized speed within a range 1000-500
 		}
 	}
 	

@@ -34,6 +34,8 @@ public class MainMenu implements GameState {
 		in.clearControlPressedRecord();
 		in.clearKeyPressedRecord();
 		in.clearMousePressedRecord();
+		
+		//enable the mouseovers here. you need to make them member vars first.
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class MainMenu implements GameState {
 
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-
+		//disable the mouseovers here. you need to make them member vars first.
 	}
 
 	@Override
