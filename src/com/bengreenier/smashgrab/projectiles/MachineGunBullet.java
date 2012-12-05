@@ -15,9 +15,9 @@ public class MachineGunBullet{
 		this.angle = angle;
 	}
 	public MachineGunBullet(Vector2i position,Vector2i other) {
-		this.position = position;
+		this.position = position.clone();
 		Vector2i calc = Vector2i.subtract(position, other).positron();
-		this.angle = (float) ((float) Math.atan2(calc.getX(), calc.getY()));
+		this.angle = (float) ((float) Math.atan2(calc.getY(), calc.getX())*180/Math.PI);
 	}
 	
 	public void draw(Graphics g) {
@@ -29,21 +29,21 @@ public class MachineGunBullet{
 	
 	public void update(int delta) {
 		if (angle>0 && angle<90)
-			position.add(new Vector2i(1*delta,1*delta));
-		else if (angle>90 && angle<180)
-			position.add(new Vector2i(-1*delta,1*delta));
-		else if (angle>180 && angle<270)
 			position.add(new Vector2i(-1*delta,-1*delta));
+		else if (angle>90 && angle<180)
+			position.add(new Vector2i(1*delta,-1*delta));
+		else if (angle>180 && angle<270)
+			position.add(new Vector2i(1*delta,1*delta));
 		else if (angle>270 && angle<360)
-			position.add(new Vector2i(-1*delta,1*delta));
+			position.add(new Vector2i(1*delta,-1*delta));
 		else if (angle == 0)
-			position.add(new Vector2i(1*delta,0*delta));
-		else if (angle == 90)
-			position.add(new Vector2i(0*delta,1*delta));
-		else if (angle == 180)
 			position.add(new Vector2i(-1*delta,0*delta));
-		else if (angle == 270)
+		else if (angle == 90)
 			position.add(new Vector2i(0*delta,-1*delta));
+		else if (angle == 180)
+			position.add(new Vector2i(1*delta,0*delta));
+		else if (angle == 270)
+			position.add(new Vector2i(0*delta,1*delta));
 	}
 
 }

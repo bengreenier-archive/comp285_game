@@ -66,7 +66,7 @@ public class Main {
 
 	public void promptShutdown()
 	{
-		//for now, just exit. but later, this will be configurable to display a popup first or something
+		//for now, just exit. but later, this might be configurable to display a popup first or something
 		agc.exit();
 	}
 }

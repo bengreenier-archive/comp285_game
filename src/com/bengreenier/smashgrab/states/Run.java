@@ -193,7 +193,7 @@ public class Run implements GameState {
 		for (Tile t : tileSystem.getTiles())
 		{
 			
-			
+			boolean ranger=false;
 			
 			if (((TileUserData) t.getUserData()) != null)
 				if (((TileUserData) t.getUserData()).object != null)
@@ -203,13 +203,19 @@ public class Run implements GameState {
 					for (AbstractEnemy e : objects)
 					{
 						
+						if (!ranger)
+						{
 						Vector2i d  = Vector2i.subtract(Vector2i.add(((TileUserData)t.getUserData()).object.getGridPosition(), new Vector2i(25,25)),Vector2i.add(e.getPosition(),new Vector2i(25,25)));
 						d.setX(Math.abs(d.getX()));
 						d.setY(Math.abs(d.getY()));
 						double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
 						if (distance <= ((TileUserData)t.getUserData()).object.getRange())
+							{
+							ranger = true;
 							inRange.add(e);
-						
+							//bullets.add(new MachineGunBullet(((TileUserData)t.getUserData()).object.getGridPosition(),e.getPosition()));
+							}
+						}
 					}
 					//doDamage to dudes in range
 					((TileUserData)t.getUserData()).object.doDamage(inRange, arg2);
