@@ -47,12 +47,17 @@ public class Main {
 
 			@Override
 			public void initStatesList(GameContainer arg0) throws SlickException {
+<<<<<<< HEAD
 				//addState(new Paused(ID.PAUSED));
 				//addState(new MainMenu(ID.MAINMENU));
 				addState(new GameOver(ID.GAMEOVER));
+=======
+				addState(new Paused(ID.PAUSED));
+				addState(new MainMenu(ID.MAINMENU));
+>>>>>>> fixed buttons and added background to main menu
 				addState(new Build(ID.BUILD));
 				addState(new Run(ID.RUN));
-				enterState(ID.BUILD);
+				enterState(ID.PAUSED);
 				
 			}
 			

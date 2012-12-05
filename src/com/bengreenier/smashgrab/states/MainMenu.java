@@ -22,6 +22,8 @@ public class MainMenu implements GameState {
 	private UnicodeFont fnt;
 	private int id;
 	private ArrayList<MouseOverArea> mouseOverArea;
+	MouseOverArea play, exit;
+	private Image backGround;
 	public MainMenu(int id){
 		this.id = id;
 		mouseOverArea = new ArrayList<MouseOverArea>();
@@ -34,8 +36,40 @@ public class MainMenu implements GameState {
 		in.clearControlPressedRecord();
 		in.clearKeyPressedRecord();
 		in.clearMousePressedRecord();
+		final GameContainer localFinalGameContainer = arg0;
+		final StateBasedGame localFinalStateBasedGame = arg1;
+
+		backGround = new Image("res/mainMenuBackground.png");
 		
 		//enable the mouseovers here. you need to make them member vars first.
+		play = new MouseOverArea(arg0, new Image("res/playButton.PNG"), 300, 200){
+			@Override
+			public void mouseReleased(int button, int mx, int my){
+				if(button == Input.MOUSE_LEFT_BUTTON){
+					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
+						localFinalStateBasedGame.enterState(Main.ID.BUILD);
+					}
+				}
+			}
+		};
+		play.setMouseOverImage(new Image("res/playButtonHovered.PNG"));
+		play.setMouseDownImage(new Image("res/playButtonPressed.PNG"));
+		
+		exit = new MouseOverArea(arg0, new Image("res/exitButton.PNG"), 300, 300){
+			@Override
+			public void mouseReleased(int button, int mx, int my){
+				if(button == Input.MOUSE_LEFT_BUTTON){
+					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
+						localFinalGameContainer.exit();
+					}
+				}
+			}
+		};
+		exit.setMouseOverImage(new Image("res/exitButtonHovered.PNG"));
+		exit.setMouseDownImage(new Image("res/exitButtonPressed.PNG"));
+		
+		mouseOverArea.add(play);
+		mouseOverArea.add(exit);
 	}
 
 	@Override
@@ -46,50 +80,9 @@ public class MainMenu implements GameState {
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {		
 		Input in = arg0.getInput();
-		final GameContainer localFinalGameContainer = arg0;
 		final StateBasedGame localFinalStateBasedGame = arg1;
 		
-		MouseOverArea play = new MouseOverArea(arg0, new Image("res/resumeButton.PNG"), 300, 200){
-			@Override
-			public void mouseReleased(int button, int mx, int my){
-				if(button == Input.MOUSE_LEFT_BUTTON){
-					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
-						System.out.println("Play released");
-					}
-				}
-			}
-		};
-		play.setMouseOverImage(new Image("res/resumeButtonDown.PNG"));
-		play.setMouseDownImage(new Image("res/resumeButtonPressed.PNG"));
-		mouseOverArea.add(play);
 		
-		MouseOverArea b = new MouseOverArea(arg0, new Image("res/mainMenu.PNG"), 300, 300){
-			@Override
-			public void mouseReleased(int button, int mx, int my){
-				if(button == Input.MOUSE_LEFT_BUTTON){
-					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
-						localFinalStateBasedGame.enterState(Main.ID.MAINMENU);
-					}
-				}
-			}
-		};
-		b.setMouseOverImage(new Image("res/mainMenuDown.PNG"));
-		b.setMouseDownImage(new Image("res/mainMenuPressed.PNG"));
-		mouseOverArea.add(b);
-		
-		MouseOverArea c = new MouseOverArea(arg0, new Image("res/exitButton.PNG"), 300, 400){
-			@Override
-			public void mouseReleased(int button, int mx, int my){
-				if(button == Input.MOUSE_LEFT_BUTTON){
-					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
-						localFinalGameContainer.exit();
-					}
-				}
-			}
-		};
-		c.setMouseOverImage(new Image("res/exitButtonHovered.PNG"));
-		c.setMouseDownImage(new Image("res/exitButtonPressed.PNG"));
-		mouseOverArea.add(c);
 		
 		fnt = new UnicodeFont("res/VINERITC.TTF", 70, true, false);
 		fnt.addAsciiGlyphs();
@@ -101,18 +94,21 @@ public class MainMenu implements GameState {
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		//disable the mouseovers here. you need to make them member vars first.
+		play.setAcceptingInput(false);
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		Color reset = arg2.getColor();
+		backGround.draw(0,0);
 		for(MouseOverArea moa : mouseOverArea)
 			moa.render(arg0, arg2);
 		arg2.setColor(Color.blue);
 		if(fnt!=null)
 			arg2.setFont(fnt);
-		arg2.drawString("Main Menu", 270, 100);
+		arg2.drawString("Smash N' Grab!", 140, 100);
 		arg2.setColor(reset);
+		
 	}
 
 	@Override
