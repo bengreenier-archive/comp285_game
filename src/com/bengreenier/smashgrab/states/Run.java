@@ -133,10 +133,10 @@ public class Run implements GameState {
 			arg1.enterState(Main.ID.GAMEOVER);
 		}
 		
-		if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
+		/*if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
 		{
 			bullets.add(new MachineGunBullet(new Vector2i(arg0.getInput().getMouseX(),arg0.getInput().getMouseY()),0));
-		}
+		}*/
 			
 		
 		for (Tile o : tileSystem.getTiles())
