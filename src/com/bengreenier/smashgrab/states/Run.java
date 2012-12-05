@@ -1,6 +1,7 @@
 package com.bengreenier.smashgrab.states;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.GameContainer;
@@ -17,8 +18,15 @@ import com.bengreenier.slick.util.Vector2i;
 
 import com.bengreenier.smashgrab.enemies.AbstractEnemy;
 import com.bengreenier.smashgrab.enemies.Boy;
-import com.bengreenier.smashgrab.enemies.Still;
+import com.bengreenier.smashgrab.enemies.Bug;
+import com.bengreenier.smashgrab.explosions.Disappear;
+import com.bengreenier.smashgrab.explosions.Explosion;
+import com.bengreenier.smashgrab.explosions.MachineGunExplosion;
 import com.bengreenier.smashgrab.main.Main;
+import com.bengreenier.smashgrab.projectiles.MachineGunBullet;
+import com.bengreenier.smashgrab.ribbons.Life;
+import com.bengreenier.smashgrab.ribbons.Ribbon;
+import com.bengreenier.smashgrab.ribbons.UnLife;
 import com.bengreenier.smashgrab.util.EnemyUserData;
 import com.bengreenier.smashgrab.util.PathWrapper;
 import com.bengreenier.smashgrab.util.TileUserData;
@@ -29,13 +37,26 @@ public class Run implements GameState {
 	private int id;
 	private TileSystem tileSystem;
 	private Path path;
+	private Ribbon topRibbon;
 	private CopyOnWriteArrayList<AbstractEnemy> objects;
+	private CopyOnWriteArrayList<Explosion> anims;
+	private CopyOnWriteArrayList<MachineGunBullet> bullets;
+	private int remaining_good_life;
 	
 	public Run(int id)
 	{
 		this.id = id;
 		tileSystem = Main.core.tileSystem;
 		objects = new CopyOnWriteArrayList<AbstractEnemy>();
+		anims = new CopyOnWriteArrayList<Explosion>();
+		bullets = new CopyOnWriteArrayList<MachineGunBullet>();
+		topRibbon = new Ribbon(802,20,0,0,Ribbon.Align.RIGHT);
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());//5 lives
+		remaining_good_life = 5;
 	}
 	
 	@Override
@@ -49,8 +70,7 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-		objects.add(new Boy(new Vector2i(0,0),8,userData));
+		
 	}
 
 	@Override
@@ -86,6 +106,14 @@ public class Run implements GameState {
 		for (AbstractEnemy o : objects)
 			o.render(arg0, arg2);
 		
+		for (Explosion a : anims)
+			a.draw(a.getPos().getX(),a.getPos().getY(),50,50);
+		
+		for (MachineGunBullet b : bullets)
+			b.draw(arg2);
+		
+		topRibbon.draw(arg2);
+		
 	}
 
 	
@@ -93,15 +121,17 @@ public class Run implements GameState {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
-		//burst_spawn(arg2);
+		burst_spawn(arg2);
 		
-		
-		
-		/*if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
+		if (remaining_good_life<=0)
 		{
-			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Still(new Vector2i(arg0.getInput().getMouseX(),arg0.getInput().getMouseY()),8,userData));
-		}*/
+			arg1.enterState(Main.ID.GAMEOVER);
+		}
+		
+		if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
+		{
+			bullets.add(new MachineGunBullet(new Vector2i(arg0.getInput().getMouseX(),arg0.getInput().getMouseY()),0));
+		}
 			
 		
 		for (Tile o : tileSystem.getTiles())
@@ -113,6 +143,7 @@ public class Run implements GameState {
 		
 		for (AbstractEnemy e : objects)
 		{
+			
 			if (e.getUserData() instanceof EnemyUserData)
 			{
 				if (e.getUserData()!=null)
@@ -121,6 +152,7 @@ public class Run implements GameState {
 					
 					EnemyUserData ud = (EnemyUserData) e.getUserData();
 					PathWrapper pw = ud.pw;
+					
 					
 					
 					//something inside here causes it to be off by 1 tile at the end
@@ -138,19 +170,31 @@ public class Run implements GameState {
 							
 							((EnemyUserData)e.getUserData()).delta_count = 0;
 						}
-						
+					if (!pw.hasNextStep() && ud.tweener==null)
+					{
+						objects.remove(e);
+						anims.add(new Disappear(e.getPosition()));
+						//also take a life. lolz
+						remaining_good_life--;
+						topRibbon.replaceRibbonItem(remaining_good_life, new UnLife());
+					}
 				}
 			}
+			
 			
 			
 			if (e.isDead())
 			{
 				objects.remove(e);
+				anims.add(new MachineGunExplosion(e.getPosition()));
 			}
 		}
 								
 		for (Tile t : tileSystem.getTiles())
 		{
+			
+			
+			
 			if (((TileUserData) t.getUserData()) != null)
 				if (((TileUserData) t.getUserData()).object != null)
 				{
@@ -172,18 +216,43 @@ public class Run implements GameState {
 				}
 		}
 		
+		for (Explosion a : anims)
+		{
+			a.update(arg2);
+			if (a.getSnd()!=null)
+				if (!a.getSnd().playing() && !a.soundMarkedForPlaying())
+				{
+					a.soundMarkedForPlaying(true);
+					a.getSnd().play();
+				}
+			if (a.isStopped())
+				anims.remove(a);
+			
+		}
+		
+		for (MachineGunBullet b : bullets)
+			b.update(arg2);
+		
 	}
 	
 	private int burst_delta_count = 0;
+	private Random burst_rand = new Random();
+	private int burst_stored_rand = 0;
 	private void burst_spawn(int delta)
 	{
 		burst_delta_count += delta;
-		if (burst_delta_count>(850 + (int)(Math.random() * ((2000 - 850) + 1))))//randomized within a range 850-1400
+		
+		if (burst_delta_count>=burst_stored_rand)//randomized within a range 0-2000
 		{
 			burst_delta_count=0;
+			burst_stored_rand = (1200+burst_rand.nextInt(1000));
 			//this is spawning code
 			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Boy(new Vector2i(0,0),8,userData));//(int)(Math.random() * ((7 - 2) + 1)),userData));//randomized speed within a range 1000-500
+			
+			if (Math.random()>0.5)
+				objects.add(new Boy(new Vector2i(0,0),8,userData));//(int)(Math.random() * ((7 - 2) + 1)),userData));//randomized speed within a range 1000-500
+			else
+				objects.add(new Bug(new Vector2i(0,0),8,userData));
 		}
 	}
 	

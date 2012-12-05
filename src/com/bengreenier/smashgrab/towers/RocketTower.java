@@ -1,5 +1,6 @@
 package com.bengreenier.smashgrab.towers;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -33,6 +34,7 @@ public class RocketTower extends AbstractTower {
 		if (image!=null)
 			image.draw(getGridPosition().getX(), getGridPosition().getY());
 		
+		g.setColor(Color.pink);
 		g.drawOval(getGridPosition().getX()+25-(getRange()), getGridPosition().getY()+25-(getRange()), getRange()*2, getRange()*2);
 	}
 

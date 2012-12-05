@@ -2,7 +2,7 @@ package com.bengreenier.smashgrab.ribbons;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-
+//TODO find a way to scale width
 public class LifeRibbon {
 
 	private Color start;
