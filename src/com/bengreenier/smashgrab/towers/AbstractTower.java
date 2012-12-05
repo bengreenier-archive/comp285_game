@@ -64,17 +64,13 @@ public abstract class AbstractTower extends GameObject {
 		if (list.isEmpty())
 			return;
 			
-		System.out.println(list);
+		//System.out.println(list);
 		
 		
 		if (damage_delta_store>=getCooldown())
 		{
-			for (AbstractEnemy e : list)
-			{
-				//imma fuckin hurt you!
-				e.applyDamage(getDamage());
-				
-			}
+			//imma fuckin hurt you!
+			list.get(0).applyDamage(getDamage());
 			damage_delta_store=0;
 		}
 	}

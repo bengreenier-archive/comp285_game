@@ -58,7 +58,7 @@ public abstract class AbstractEnemy extends GameObject {
 	}*/
 
 	public void applyDamage(int damage) {
-		System.out.println("doing damage "+damage+" to "+this+" who had health "+lifeRibbon.getHealth());
+		//System.out.println("doing damage "+damage+" to "+this+" who had health "+lifeRibbon.getHealth());
 		lifeRibbon.setHealth(lifeRibbon.getHealth()-damage);
 		if (lifeRibbon.getHealth()<=0)
 			dead=true;

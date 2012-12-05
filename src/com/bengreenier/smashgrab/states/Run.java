@@ -2,6 +2,7 @@ package com.bengreenier.smashgrab.states;
 
 import java.util.ArrayList;
 
+
 import java.util.Collection;
 import java.util.Random;
 
@@ -9,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
@@ -21,8 +23,15 @@ import com.bengreenier.slick.util.Vector2i;
 
 import com.bengreenier.smashgrab.enemies.AbstractEnemy;
 import com.bengreenier.smashgrab.enemies.Boy;
-import com.bengreenier.smashgrab.enemies.Still;
+import com.bengreenier.smashgrab.enemies.Bug;
+import com.bengreenier.smashgrab.explosions.Disappear;
+import com.bengreenier.smashgrab.explosions.Explosion;
+import com.bengreenier.smashgrab.explosions.MachineGunExplosion;
 import com.bengreenier.smashgrab.main.Main;
+import com.bengreenier.smashgrab.projectiles.MachineGunBullet;
+import com.bengreenier.smashgrab.ribbons.Life;
+import com.bengreenier.smashgrab.ribbons.Ribbon;
+import com.bengreenier.smashgrab.ribbons.UnLife;
 import com.bengreenier.smashgrab.util.EnemyUserData;
 import com.bengreenier.smashgrab.util.PathWrapper;
 import com.bengreenier.smashgrab.util.TileUserData;
@@ -35,13 +44,16 @@ public class Run implements GameState {
 	private int id;
 	private TileSystem tileSystem;
 	private Path path;
+	private Ribbon topRibbon;
 	private CopyOnWriteArrayList<AbstractEnemy> objects;
 
 	private CopyOnWriteArrayList<Explosion> anims;
 	private CopyOnWriteArrayList<MachineGunBullet> bullets;
 	private int remaining_good_life;
 	private Image background;
+
 	private WaveManager waveManager;
+
 
 	
 	public Run(int id)
@@ -49,12 +61,22 @@ public class Run implements GameState {
 		this.id = id;
 		tileSystem = Main.core.tileSystem;
 		objects = new CopyOnWriteArrayList<AbstractEnemy>();
+		anims = new CopyOnWriteArrayList<Explosion>();
+		bullets = new CopyOnWriteArrayList<MachineGunBullet>();
+		topRibbon = new Ribbon(802,20,0,0,Ribbon.Align.RIGHT);
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());
+		topRibbon.addRibbonItem(new Life());//5 lives
+		remaining_good_life = 5;
 	}
 	
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		tileSystem = Main.core.tileSystem;
+
 		
 		Input in = arg0.getInput();
 		in.clearControlPressedRecord();
@@ -62,6 +84,7 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
+
 
 		configureWaveManager();
 		
@@ -78,9 +101,11 @@ public class Run implements GameState {
 	public void init(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 
+
 		background = new Image("res/runStateBackground.png");
 		
 		
+
 
 		
 	}
@@ -94,7 +119,8 @@ public class Run implements GameState {
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
-		
+		if(background!=null)
+			background.draw(0,0);
 		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)
@@ -105,6 +131,14 @@ public class Run implements GameState {
 		for (AbstractEnemy o : objects)
 			o.render(arg0, arg2);
 		
+		for (Explosion a : anims)
+			a.draw(a.getPos().getX(),a.getPos().getY(),50,50);
+		
+		for (MachineGunBullet b : bullets)
+			b.draw(arg2);
+		
+		topRibbon.draw(arg2);
+		
 	}
 
 	
@@ -112,15 +146,17 @@ public class Run implements GameState {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
-		//burst_spawn(arg2);
+		burst_spawn(arg2);
 		
-		
-		
-		/*if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
+		if (remaining_good_life<=0)
 		{
-			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Still(new Vector2i(arg0.getInput().getMouseX(),arg0.getInput().getMouseY()),8,userData));
-		}*/
+			arg1.enterState(Main.ID.GAMEOVER);
+		}
+		
+		if (arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))
+		{
+			bullets.add(new MachineGunBullet(new Vector2i(arg0.getInput().getMouseX(),arg0.getInput().getMouseY()),0));
+		}
 			
 		
 		for (Tile o : tileSystem.getTiles())
@@ -132,6 +168,7 @@ public class Run implements GameState {
 		
 		for (AbstractEnemy e : objects)
 		{
+			
 			if (e.getUserData() instanceof EnemyUserData)
 			{
 				if (e.getUserData()!=null)
@@ -140,6 +177,7 @@ public class Run implements GameState {
 					
 					EnemyUserData ud = (EnemyUserData) e.getUserData();
 					PathWrapper pw = ud.pw;
+					
 					
 					
 					//something inside here causes it to be off by 1 tile at the end
@@ -157,19 +195,31 @@ public class Run implements GameState {
 							
 							((EnemyUserData)e.getUserData()).delta_count = 0;
 						}
-						
+					if (!pw.hasNextStep() && ud.tweener==null)
+					{
+						objects.remove(e);
+						anims.add(new Disappear(e.getPosition()));
+						//also take a life. lolz
+						remaining_good_life--;
+						topRibbon.replaceRibbonItem(remaining_good_life, new UnLife());
+					}
 				}
 			}
+			
 			
 			
 			if (e.isDead())
 			{
 				objects.remove(e);
+				anims.add(new MachineGunExplosion(e.getPosition()));
 			}
 		}
 								
 		for (Tile t : tileSystem.getTiles())
 		{
+			
+			boolean ranger=false;
+			
 			if (((TileUserData) t.getUserData()) != null)
 				if (((TileUserData) t.getUserData()).object != null)
 				{
@@ -178,46 +228,77 @@ public class Run implements GameState {
 					for (AbstractEnemy e : objects)
 					{
 						
+						if (!ranger)
+						{
 						Vector2i d  = Vector2i.subtract(Vector2i.add(((TileUserData)t.getUserData()).object.getGridPosition(), new Vector2i(25,25)),Vector2i.add(e.getPosition(),new Vector2i(25,25)));
 						d.setX(Math.abs(d.getX()));
 						d.setY(Math.abs(d.getY()));
 						double distance = Math.sqrt(Math.pow(d.getX(),2)+Math.pow(d.getY(),2));
 						if (distance <= ((TileUserData)t.getUserData()).object.getRange())
+							{
+							ranger = true;
 							inRange.add(e);
-						
+							//bullets.add(new MachineGunBullet(((TileUserData)t.getUserData()).object.getGridPosition(),e.getPosition()));
+							}
+						}
 					}
 					//doDamage to dudes in range
 					((TileUserData)t.getUserData()).object.doDamage(inRange, arg2);
 				}
 		}
 		
+		for (Explosion a : anims)
+		{
+			a.update(arg2);
+			if (a.getSnd()!=null)
+				if (!a.getSnd().playing() && !a.soundMarkedForPlaying())
+				{
+					a.soundMarkedForPlaying(true);
+					a.getSnd().play();
+				}
+			if (a.isStopped())
+				anims.remove(a);
+			
+		}
+		
+		for (MachineGunBullet b : bullets)
+			b.update(arg2);
+		
+		if  (arg0.getInput().isKeyPressed(Input.KEY_ESCAPE))
+			arg1.enterState(Main.ID.PAUSED);
+		
 	}
 	
 	private int burst_delta_count = 0;
+	private Random burst_rand = new Random();
+	private int burst_stored_rand = 0;
 	private void burst_spawn(int delta)
 	{
 		burst_delta_count += delta;
-		if (burst_delta_count>(850 + (int)(Math.random() * ((2000 - 850) + 1))))//randomized within a range 850-1400
+		
+		if (burst_delta_count>=burst_stored_rand)//randomized within a range 0-2000
 		{
 			burst_delta_count=0;
+			burst_stored_rand = (1200+burst_rand.nextInt(1000));
 			//this is spawning code
+
 
 			if (waveManager.getNextWave()!=null)
 				for (AbstractEnemy e : waveManager.getNextWave().getEnemies())
 					objects.add(e);
 			else
 				System.out.println("NULL WHORE");
-			/*EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			
-			if (Math.random()>0.5)
-				objects.add(new Boy(new Vector2i(0,0),8,userData));//(int)(Math.random() * ((7 - 2) + 1)),userData));//randomized speed within a range 1000-500
-			else
-				objects.add(new Bug(new Vector2i(0,0),8,userData));*/
-
+		
 		}
 	}
 	
 
+	//this is a BAD way to do this.... 
+	public void resetAllInternalObjectLists(){
+		objects.clear();
+		anims.clear();
+		bullets.clear();
+	}
 	
 	public void configureWaveManager() {
 		waveManager = new WaveManager();
@@ -290,7 +371,7 @@ public class Run implements GameState {
 	@Override
 	public boolean isAcceptingInput() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -307,7 +388,7 @@ public class Run implements GameState {
 
 	@Override
 	public void keyReleased(int arg0, char arg1) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

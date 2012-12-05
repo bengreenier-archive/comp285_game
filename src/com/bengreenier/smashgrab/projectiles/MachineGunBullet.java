@@ -1,54 +1,49 @@
 package com.bengreenier.smashgrab.projectiles;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
 
-import com.bengreenier.slick.util.Renderable;
 import com.bengreenier.slick.util.Vector2i;
 
-public class MachineGunBullet extends AbstractProjectile {
+public class MachineGunBullet{
 	
-	public MachineGunBullet(Vector2i absolutePosition,Vector2i gridPosition,Vector2f velocity)
-	{
-		super(absolutePosition, gridPosition, new Vector2i(7,3),velocity);
-		setVisual(new Renderable(){
-
-			@Override
-			public void draw(Graphics g) {
-				Color t = g.getColor();
-				g.setColor(Color.green);
-				g.fill(shape);
-				g.setColor(t);
-				
-			}
-
-			@Override
-			public void update(int time) {
-				shape.setLocation(getPosition().getX(),getPosition().getY());
-				
-			}});
+	private Vector2i position;
+	private float angle;
+	
+	public MachineGunBullet(Vector2i position,float angle) {
+		this.position = position;
+		this.angle = angle;
 	}
-
-	@Override
-	public void render(GameContainer gc, Graphics g) {
-		if (getVisual() != null)
-			getVisual().draw(g);
-		
+	public MachineGunBullet(Vector2i position,Vector2i other) {
+		this.position = position.clone();
+		Vector2i calc = Vector2i.subtract(position, other).positron();
+		this.angle = (float) ((float) Math.atan2(calc.getY(), calc.getX())*180/Math.PI);
 	}
-
-	@Override
-	public void update(GameContainer gc, int delta) {
-		getVisual().update(delta);
-		this.setPosition(Vector2i.add(getPosition(), new Vector2i((int)(delta*velocity.getX()),(int)(delta*velocity.getY()))));//this MIGHT work, to update the location.
-		
+	
+	public void draw(Graphics g) {
+		Color t = g.getColor();
+		g.setColor(Color.gray);
+		g.drawOval(position.getX(), position.getY(), 3, 3);
+		g.setColor(t);
 	}
-
-	@Override
-	public void init(GameContainer gc) {
-		// TODO Auto-generated method stub
-		
+	
+	public void update(int delta) {
+		if (angle>0 && angle<90)
+			position.add(new Vector2i(-1*delta,-1*delta));
+		else if (angle>90 && angle<180)
+			position.add(new Vector2i(1*delta,-1*delta));
+		else if (angle>180 && angle<270)
+			position.add(new Vector2i(1*delta,1*delta));
+		else if (angle>270 && angle<360)
+			position.add(new Vector2i(1*delta,-1*delta));
+		else if (angle == 0)
+			position.add(new Vector2i(-1*delta,0*delta));
+		else if (angle == 90)
+			position.add(new Vector2i(0*delta,-1*delta));
+		else if (angle == 180)
+			position.add(new Vector2i(1*delta,0*delta));
+		else if (angle == 270)
+			position.add(new Vector2i(0*delta,1*delta));
 	}
 
 }

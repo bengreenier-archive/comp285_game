@@ -1,7 +1,5 @@
 package com.bengreenier.smashgrab.states;
 
-import java.util.ArrayList;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.ribbons.Ribbon;
 import com.bengreenier.smashgrab.ribbons.RibbonItem;
+import com.bengreenier.smashgrab.towers.EndPoint;
 import com.bengreenier.smashgrab.towers.LaserTower;
 import com.bengreenier.smashgrab.towers.MachineGunTower;
 import com.bengreenier.smashgrab.towers.RocketTower;
@@ -21,23 +20,21 @@ import com.bengreenier.smashgrab.util.TileUserData;
 
 import com.bengreenier.slick.tiling.TileSystem.Tile;
 import com.bengreenier.slick.tiling.TileSystem;
-import com.bengreenier.slick.util.GameObject;
 import com.bengreenier.slick.util.Vector2i;
 
 public class Build implements GameState {
 
-	private ArrayList<GameObject> objects;
 	private Ribbon ribbon;
 	private TileSystem tileSystem;
 	private Image mouseSprite;
 	@SuppressWarnings("rawtypes")
 	private Class mouseType;
 	private int id;
+	private Image background;
 	
 	public Build(int id)
 	{
 		this.id = id;
-		objects = Main.core.tileObjects;
 		ribbon = new Ribbon("#3399CC",802,80,0,500);
 		mouseSprite=null;
 		mouseType=null;
@@ -48,7 +45,7 @@ public class Build implements GameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		tileSystem = Main.core.tileSystem;//do this in init too
-		objects = Main.core.tileObjects;
+		
 		
 		Input in = arg0.getInput();
 		in.clearControlPressedRecord();
@@ -69,8 +66,17 @@ public class Build implements GameState {
 		final Build localFinalBuildPointer = this;
 		final StateBasedGame localFinalStateBasedGame = arg1;
 		
-		arg0.getInput().addListener(ribbon);
+		background = new Image("res/runStateBackground.png");
 		
+		arg0.getInput().addListener(ribbon);//makes it so the ribbon can listen to input
+		
+		//add our platform
+		try {
+			tileSystem.getTile(15, 9).setUserData(new TileUserData(new EndPoint(tileSystem.reverseLocate(15, 9))));
+		} catch (Exception e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
 		
 		ribbon.addRibbonItem(new RibbonItem(){
 			
@@ -154,8 +160,14 @@ public class Build implements GameState {
 							}
 							if (t!=null)
 							{
-								t.setUserData(new TileUserData(tower));
 								t.setFilled(true);
+								if (tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1)!=null)
+								{
+								t.setUserData(new TileUserData(tower));
+								}else
+								{
+									t.setFilled(false);
+								}
 							}
 						}
 						
@@ -252,8 +264,14 @@ public class Build implements GameState {
 							}
 							if (t!=null)
 							{
-								t.setUserData(new TileUserData(tower));
 								t.setFilled(true);
+								if (tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1)!=null)
+								{
+								t.setUserData(new TileUserData(tower));
+								}else
+								{
+									t.setFilled(false);
+								}
 							}
 						}
 					}
@@ -341,6 +359,7 @@ public class Build implements GameState {
 						}
 						if (rev_loc != null)
 						{
+							
 							LaserTower tower = new LaserTower(new Vector2i(arg1,arg2),rev_loc,30);
 							Tile t = null;
 							try {
@@ -351,8 +370,14 @@ public class Build implements GameState {
 							}
 							if (t!=null)
 							{
-								t.setUserData(new TileUserData(tower));
 								t.setFilled(true);
+								if (tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1)!=null)
+								{
+								t.setUserData(new TileUserData(tower));
+								}else
+								{
+									t.setFilled(false);
+								}
 							}
 						}
 					}
@@ -387,12 +412,14 @@ public class Build implements GameState {
 	public void leave(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		Main.core.tileSystem = tileSystem;
-		Main.core.tileObjects = objects;
+		
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
+		if(background!=null)
+			background.draw(0,0);
 		
 		//draw our grid
 				Color t = arg2.getColor();
@@ -404,6 +431,7 @@ public class Build implements GameState {
 					}
 				arg2.setColor(t);
 				
+		
 		
 		if (ribbon!=null)
 			ribbon.draw(arg2);
@@ -417,9 +445,6 @@ public class Build implements GameState {
 					if (((TileUserData) o.getUserData()).object!=null)
 						((TileUserData) o.getUserData()).object.render(arg0, arg2);
 		
-		for (GameObject o : objects)
-			o.render(arg0, arg2);
-		
 		
 		if (mouseSprite!=null)
 			mouseSprite.draw(arg0.getInput().getMouseX(),arg0.getInput().getMouseY());
@@ -430,8 +455,8 @@ public class Build implements GameState {
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
 			throws SlickException {
 
-		for (GameObject o : objects)
-			o.update(arg0, arg2);
+		
+		
 		
 	}
 	

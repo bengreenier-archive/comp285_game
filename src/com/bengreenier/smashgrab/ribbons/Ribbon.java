@@ -12,30 +12,45 @@ import com.bengreenier.slick.util.HexColor;
 
 public class Ribbon implements InputListener{
 
+	public enum Align{RIGHT,LEFT,CENTER};
+	
 	private Rectangle s;
-	private String color;
+	private Color color;
 	private ArrayList<RibbonItem> list;
 	private int width;
 	private int height;
 	private int location_x=0;
 	private int location_y=0;
 	private boolean enabled=true;
+	private Align align;
 	
 	public Ribbon(String color,int width,int height)
 	{
-		this.color = color;
+		this.color = new HexColor(color);
 		this.width = width;
 		this.height = height;
-		
+		align = Align.CENTER;
 		s = new Rectangle(0,0,width,height);
 		
 		list = new ArrayList<RibbonItem>();
 		
 	}
 	
+	public Ribbon(int width,int height,int locx, int locy,Align align) {
+		this.color = new Color(0,0,0,0);
+		this.width = width;
+		this.height = height;
+		location_x = locx;
+		location_y = locy;
+		this.align = align;
+		s = new Rectangle(0,0,width,height);
+		
+		list = new ArrayList<RibbonItem>();
+	}
+	
 	public Ribbon(String color,int width,int height,int locx,int locy)
 	{
-		this.color = color;
+		this.color = new HexColor(color);
 		this.width = width;
 		this.height = height;
 		location_x = locx;
@@ -44,7 +59,7 @@ public class Ribbon implements InputListener{
 		s = new Rectangle(0,0,width,height);
 		
 		list = new ArrayList<RibbonItem>();
-		
+		align = Align.CENTER;
 	}
 	
 	public void setLocation(int x,int y)
@@ -56,7 +71,7 @@ public class Ribbon implements InputListener{
 	public void draw(Graphics g) {
 		
 		Color t = g.getColor();
-		g.setColor(new HexColor(color));
+		g.setColor(color);
 		s.setLocation(location_x, location_y);
 		g.fill(s);
 		g.setColor(t);
@@ -68,29 +83,67 @@ public class Ribbon implements InputListener{
 	}
 	
 	
-	
+	private int xoff=0;
 	public void addRibbonItem(RibbonItem a)
 	{
 		list.add(a);
 		
-		int current_item_index=0;
 		
-		for (RibbonItem item : list)
+		if (align == Align.CENTER)
 		{
-			int r_w = item.getWidth();
-			int r_h = item.getHeight();
-			
-			float posx = location_x+(current_item_index*(width/list.size()))+(width/(2*list.size()))-(0.5f*r_w);
-			float posy = location_y+(0.5f*(height-r_h));
-			
-			//update bounds (for mouseover info).
-			item.updateBounds(posx, posy);
-			
-			current_item_index++;
+			int current_item_index=0;
+			for (RibbonItem item : list)
+			{
+				int r_w = item.getWidth();
+				int r_h = item.getHeight();
+				
+				float posx = location_x+(current_item_index*(width/list.size()))+(width/(2*list.size()))-(0.5f*r_w);
+				float posy = location_y+(0.5f*(height-r_h));
+				
+				
+				//update bounds (for mouseover info).
+				item.updateBounds(posx, posy);
+				
+				current_item_index++;
+			}
+		}
+		else if (align == Align.RIGHT)
+		{
+			xoff -= (a.getWidth()+5);//5 is padding
+			a.updateBounds((location_x+width+xoff), location_y+(0.5f*(height-a.getHeight())));
+		}else if (align == Align.LEFT)
+		{
+			xoff += (a.getWidth()+5);//5 is padding
+			a.updateBounds((location_x+xoff), location_y+(0.5f*(height-a.getHeight())));
 		}
 	}
 	
+	//reverse above operations
+	public RibbonItem popRibbonItem() {
+		RibbonItem a = list.get(list.size()-1);
+		if (align == Align.RIGHT)
+		{
+			xoff += (a.getWidth()+5);//5 is padding
+			//a.updateBounds((location_x+width+xoff), location_y+(0.5f*(height-a.getHeight())));
+		}else if (align == Align.LEFT)
+		{
+			xoff -= (a.getWidth()+5);//5 is padding
+			//a.updateBounds((location_x+xoff), location_y+(0.5f*(height-a.getHeight())));
+		}
+		list.remove(a);
+		list.trimToSize();
+		return a;
+	}
 	
+	public void replaceRibbonItem(int pos, RibbonItem replace) {
+		RibbonItem t = list.get(pos);
+		replace.updateBounds(t.getX(), t.getY());
+		list.set(pos, replace);
+	}
+	
+	public ArrayList<RibbonItem> getList() {
+		return list;
+	}
 
 	public boolean isEnabled() {
 		return enabled;
