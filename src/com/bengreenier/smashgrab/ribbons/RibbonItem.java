@@ -14,7 +14,7 @@ import org.newdawn.slick.Renderable;
  **/
 public class RibbonItem implements MouseListener{
 	
-	private ArrayList<Renderable> list;
+	protected ArrayList<Renderable> list;
 	
 	private int width=0;
 	private int height=0;

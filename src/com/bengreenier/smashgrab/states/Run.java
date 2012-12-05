@@ -30,6 +30,7 @@ import com.bengreenier.smashgrab.explosions.MachineGunExplosion;
 import com.bengreenier.smashgrab.main.Main;
 import com.bengreenier.smashgrab.projectiles.MachineGunBullet;
 import com.bengreenier.smashgrab.ribbons.Life;
+import com.bengreenier.smashgrab.ribbons.Money;
 import com.bengreenier.smashgrab.ribbons.Ribbon;
 import com.bengreenier.smashgrab.ribbons.UnLife;
 import com.bengreenier.smashgrab.util.EnemyUserData;
@@ -45,6 +46,7 @@ public class Run implements GameState {
 	private TileSystem tileSystem;
 	private Path path;
 	private Ribbon topRibbon;
+	private Ribbon leftRibbon;//really bad way to do the money in a ribbon
 	private CopyOnWriteArrayList<AbstractEnemy> objects;
 
 	private CopyOnWriteArrayList<Explosion> anims;
@@ -64,6 +66,8 @@ public class Run implements GameState {
 		anims = new CopyOnWriteArrayList<Explosion>();
 		bullets = new CopyOnWriteArrayList<MachineGunBullet>();
 		topRibbon = new Ribbon(802,20,0,0,Ribbon.Align.RIGHT);
+		leftRibbon = new Ribbon(802,20,0,0,Ribbon.Align.LEFT);
+		leftRibbon.addRibbonItem(new Money(100));
 		topRibbon.addRibbonItem(new Life());
 		topRibbon.addRibbonItem(new Life());
 		topRibbon.addRibbonItem(new Life());
@@ -86,8 +90,8 @@ public class Run implements GameState {
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
 
 
-		configureWaveManager();
-		
+		configureWaveManager();//should be done elsewhere
+		waveManager.getNextWave();//sets getCurrentWave
 
 	}
 
@@ -138,6 +142,7 @@ public class Run implements GameState {
 			b.draw(arg2);
 		
 		topRibbon.draw(arg2);
+		leftRibbon.draw(arg2);
 		
 	}
 
@@ -276,18 +281,17 @@ public class Run implements GameState {
 	{
 		burst_delta_count += delta;
 		
-		if (burst_delta_count>=burst_stored_rand)//randomized within a range 0-2000
+		if (burst_delta_count>=burst_stored_rand)
 		{
 			burst_delta_count=0;
 			burst_stored_rand = (1200+burst_rand.nextInt(1000));
 			//this is spawning code
 
 
-			if (waveManager.getNextWave()!=null)
-				for (AbstractEnemy e : waveManager.getNextWave().getEnemies())
-					objects.add(e);
-			else
-				System.out.println("NULL WHORE");
+			if (waveManager.getCurrentWave()!=null)
+				if (waveManager.getCurrentWave().getNextEnemy()!=null)//this will cycle, too
+					objects.add(waveManager.getCurrentWave().getCurrentEnemy());
+			
 		
 		}
 	}
@@ -303,8 +307,6 @@ public class Run implements GameState {
 	public void configureWaveManager() {
 		waveManager = new WaveManager();
 		waveManager.addWave(new Wave(generateEnemies()));
-		waveManager.addWave(new Wave(generateEnemies()));
-		waveManager.addWave(new Wave(generateEnemies()));
 	}
 	
 	private Collection<AbstractEnemy> generateEnemies() {
@@ -312,11 +314,12 @@ public class Run implements GameState {
 		
 		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
 		for (int i=0;i<Math.random()*20;i++)
-		if (Math.random()>0.5)
-			list.add(new Boy(new Vector2i(0,0),8,userData));
-		else
-			list.add(new Bug(new Vector2i(0,0),10,userData));
+			if (Math.random()>0.5)
+				list.add(new Boy(new Vector2i(0,0),8,userData));
+			else
+				list.add(new Bug(new Vector2i(0,0),10,userData));
 		
+		System.out.println(list.size());
 		return list;
 	}
 	

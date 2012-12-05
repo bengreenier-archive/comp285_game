@@ -20,16 +20,32 @@ public class WaveManager {
 	 */
 	public static class Wave{
 		private Collection<AbstractEnemy> enemies;
+		private AbstractEnemy current;
 		public Wave(Collection<AbstractEnemy> enemies) {
 			this.enemies = enemies;
 		}
 		public Collection<AbstractEnemy> getEnemies() {
 			return enemies;
-		}	
+		}
+		
+		public AbstractEnemy getNextEnemy() {
+			if (enemies.iterator().hasNext())
+			{
+				current = enemies.iterator().next();
+				return current;
+			}
+			
+			return null;
+		}
+		
+		public AbstractEnemy getCurrentEnemy() {
+			return current;
+		}
 	}
 	
 	
 	private Collection<Wave> waves;
+	private Wave current;
 	
 	public WaveManager() {
 		waves = new ArrayList<Wave>();
@@ -41,7 +57,10 @@ public class WaveManager {
 	
 	public Wave getNextWave() {
 		if (waves.iterator().hasNext())
-			return waves.iterator().next();
+		{
+			current = waves.iterator().next();
+			return current;
+		}
 		
 		return null;
 	}
@@ -50,7 +69,12 @@ public class WaveManager {
 		waves.add(wave);
 	}
 	
+	public Wave getCurrentWave() {
+		return current;
+	}
+	
 	//dont do this like this...
+	@Deprecated
 	public void injectPath(Path path) {
 		Iterator<Wave> i = waves.iterator();
 		while (i.hasNext())
