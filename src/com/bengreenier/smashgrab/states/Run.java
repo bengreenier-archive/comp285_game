@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
@@ -42,6 +43,7 @@ public class Run implements GameState {
 	private CopyOnWriteArrayList<Explosion> anims;
 	private CopyOnWriteArrayList<MachineGunBullet> bullets;
 	private int remaining_good_life;
+	private Image background;
 	
 	public Run(int id)
 	{
@@ -63,6 +65,7 @@ public class Run implements GameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		tileSystem = Main.core.tileSystem;
+
 		
 		Input in = arg0.getInput();
 		in.clearControlPressedRecord();
@@ -82,6 +85,7 @@ public class Run implements GameState {
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
+		background = new Image("res/runStateBackground.png");
 		// TODO Auto-generated method stub
 		
 	}
@@ -95,7 +99,8 @@ public class Run implements GameState {
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
-		
+		if(background!=null)
+			background.draw(0,0);
 		
 		for (Tile o : tileSystem.getTiles())
 			if (o!=null)
@@ -239,6 +244,9 @@ public class Run implements GameState {
 		for (MachineGunBullet b : bullets)
 			b.update(arg2);
 		
+		if  (arg0.getInput().isKeyPressed(Input.KEY_ESCAPE))
+			arg1.enterState(Main.ID.PAUSED);
+		
 	}
 	
 	private int burst_delta_count = 0;
@@ -263,6 +271,12 @@ public class Run implements GameState {
 	}
 	
 
+	//this is a BAD way to do this.... 
+	public void resetAllInternalObjectLists(){
+		objects.clear();
+		anims.clear();
+		bullets.clear();
+	}
 	
 	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
@@ -315,7 +329,7 @@ public class Run implements GameState {
 	@Override
 	public boolean isAcceptingInput() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -332,7 +346,7 @@ public class Run implements GameState {
 
 	@Override
 	public void keyReleased(int arg0, char arg1) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

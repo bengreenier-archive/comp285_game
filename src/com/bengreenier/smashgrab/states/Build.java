@@ -30,6 +30,7 @@ public class Build implements GameState {
 	@SuppressWarnings("rawtypes")
 	private Class mouseType;
 	private int id;
+	private Image background;
 	
 	public Build(int id)
 	{
@@ -44,6 +45,7 @@ public class Build implements GameState {
 	public void enter(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
 		tileSystem = Main.core.tileSystem;//do this in init too
+		
 		
 		Input in = arg0.getInput();
 		in.clearControlPressedRecord();
@@ -64,7 +66,9 @@ public class Build implements GameState {
 		final Build localFinalBuildPointer = this;
 		final StateBasedGame localFinalStateBasedGame = arg1;
 		
-		arg0.getInput().addListener(ribbon);
+		background = new Image("res/runStateBackground.png");
+		
+		arg0.getInput().addListener(ribbon);//makes it so the ribbon can listen to input
 		
 		//add our platform
 		try {
@@ -414,6 +418,8 @@ public class Build implements GameState {
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2)
 			throws SlickException {
+		if(background!=null)
+			background.draw(0,0);
 		
 		//draw our grid
 				Color t = arg2.getColor();
@@ -425,6 +431,7 @@ public class Build implements GameState {
 					}
 				arg2.setColor(t);
 				
+		
 		
 		if (ribbon!=null)
 			ribbon.draw(arg2);

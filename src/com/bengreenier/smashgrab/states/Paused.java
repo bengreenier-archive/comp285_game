@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.MouseOverArea;
@@ -22,7 +23,8 @@ public class Paused implements GameState {
 	private UnicodeFont fnt;
 	private int id;
 	private ArrayList<MouseOverArea> mouseOverArea;
-	MouseOverArea resume, mainMenu, exitButton;
+	private MouseOverArea resume, mainMenu, exitButton;
+	private Sound sound;
 	public Paused(int id){
 		this.id = id;
 		mouseOverArea = new ArrayList<MouseOverArea>();
@@ -47,7 +49,7 @@ public class Paused implements GameState {
 			public void mouseReleased(int button, int mx, int my){
 				if(button == Input.MOUSE_LEFT_BUTTON){
 					if((getX() < mx && getX()+getWidth() > mx) && (getY() < my && getY()+getHeight() > my)){
-						localFinalStateBasedGame.enterState(Main.ID.BUILD);
+						localFinalStateBasedGame.enterState(Main.ID.RUN);
 					}
 				}
 			}
@@ -90,10 +92,10 @@ public class Paused implements GameState {
 		return id;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {		
-		Input in = arg0.getInput();
-		
+		sound = new Sound("res/buttonSound.ogg");
 		
 		fnt = new UnicodeFont("res/VINERITC.TTF", 70, true, false);
 		fnt.addAsciiGlyphs();
@@ -113,6 +115,10 @@ public class Paused implements GameState {
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		Color reset = arg2.getColor();
+		arg1.getState(Main.ID.RUN).render(arg0, arg1, arg2);
+		arg2.setColor(new Color(0,0,0,120));
+		arg2.fillRect(0, 0, arg0.getWidth(), arg0.getHeight());
+		
 		for(MouseOverArea moa : mouseOverArea)
 			moa.render(arg0, arg2);
 		arg2.setColor(Color.blue);
@@ -122,11 +128,51 @@ public class Paused implements GameState {
 		arg2.setColor(reset);
 	}
 
+	private boolean resume_sound_toggle=false, mainMenu_sound_toggle=false, exitButton_sound_toggle=false;	
+	
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		Input in = arg0.getInput();
 		if(in.isKeyPressed(Input.KEY_ESCAPE))
-			arg0.exit();
+			arg1.enterState(Main.ID.RUN);
+		if(resume.isMouseOver())
+		{
+			if  (!resume_sound_toggle)
+			{
+				resume_sound_toggle=true;
+				if (!sound.playing())
+					sound.play();
+			}
+		}else{
+			if (resume_sound_toggle)
+				resume_sound_toggle=false;
+		}
+		
+		if(mainMenu.isMouseOver())
+		{
+			if  (!mainMenu_sound_toggle)
+			{
+				mainMenu_sound_toggle=true;
+				if (!sound.playing())
+					sound.play();
+			}
+		}else{
+			if (mainMenu_sound_toggle)
+				mainMenu_sound_toggle=false;
+		}
+		
+		if(exitButton.isMouseOver())
+		{
+			if  (!exitButton_sound_toggle)
+			{
+				exitButton_sound_toggle=true;
+				if (!sound.playing())
+					sound.play();
+			}
+		}else{
+			if (exitButton_sound_toggle)
+				exitButton_sound_toggle=false;
+		}
 	}
 
 	@Override

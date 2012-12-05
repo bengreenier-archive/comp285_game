@@ -1,6 +1,5 @@
 package com.bengreenier.smashgrab.main;
 
-import java.util.ArrayList;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -14,10 +13,6 @@ import com.bengreenier.smashgrab.states.GameOver;
 import com.bengreenier.smashgrab.states.MainMenu;
 import com.bengreenier.smashgrab.states.Paused;
 import com.bengreenier.smashgrab.states.Run;
-import com.bengreenier.smashgrab.towers.EndPoint;
-import com.bengreenier.smashgrab.util.TileUserData;
-
-import com.bengreenier.slick.util.GameObject;
 
 public class Main {
 
@@ -49,12 +44,12 @@ public class Main {
 			public void initStatesList(GameContainer arg0) throws SlickException {
 				//addState(new Paused(ID.PAUSED));
 				//addState(new MainMenu(ID.MAINMENU));
+				addState(new MainMenu(ID.MAINMENU));
 				addState(new GameOver(ID.GAMEOVER));
 				addState(new Paused(ID.PAUSED));
-				addState(new MainMenu(ID.MAINMENU));
 				addState(new Build(ID.BUILD));
 				addState(new Run(ID.RUN));
-				enterState(ID.PAUSED);
+				enterState(ID.MAINMENU);
 				
 			}
 			
