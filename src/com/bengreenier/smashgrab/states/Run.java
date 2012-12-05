@@ -1,6 +1,10 @@
 package com.bengreenier.smashgrab.states;
 
 import java.util.ArrayList;
+
+import java.util.Collection;
+import java.util.Random;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.newdawn.slick.GameContainer;
@@ -23,6 +27,8 @@ import com.bengreenier.smashgrab.util.EnemyUserData;
 import com.bengreenier.smashgrab.util.PathWrapper;
 import com.bengreenier.smashgrab.util.TileUserData;
 import com.bengreenier.smashgrab.util.Tweener;
+import com.bengreenier.smashgrab.util.WaveManager;
+import com.bengreenier.smashgrab.util.WaveManager.Wave;
 
 public class Run implements GameState {
 
@@ -30,6 +36,13 @@ public class Run implements GameState {
 	private TileSystem tileSystem;
 	private Path path;
 	private CopyOnWriteArrayList<AbstractEnemy> objects;
+
+	private CopyOnWriteArrayList<Explosion> anims;
+	private CopyOnWriteArrayList<MachineGunBullet> bullets;
+	private int remaining_good_life;
+	private Image background;
+	private WaveManager waveManager;
+
 	
 	public Run(int id)
 	{
@@ -49,8 +62,10 @@ public class Run implements GameState {
 		in.clearMousePressedRecord();
 		
 		path = tileSystem.getAStarPath(0, 0, tileSystem.getWidthInTiles()-1, tileSystem.getHeightInTiles()-1);
-		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-		objects.add(new Boy(new Vector2i(0,0),8,userData));
+
+		configureWaveManager();
+		
+
 	}
 
 	@Override
@@ -62,7 +77,11 @@ public class Run implements GameState {
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1)
 			throws SlickException {
-		// TODO Auto-generated method stub
+
+		background = new Image("res/runStateBackground.png");
+		
+		
+
 		
 	}
 
@@ -182,12 +201,43 @@ public class Run implements GameState {
 		{
 			burst_delta_count=0;
 			//this is spawning code
-			EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
-			objects.add(new Boy(new Vector2i(0,0),8,userData));//(int)(Math.random() * ((7 - 2) + 1)),userData));//randomized speed within a range 1000-500
+
+			if (waveManager.getNextWave()!=null)
+				for (AbstractEnemy e : waveManager.getNextWave().getEnemies())
+					objects.add(e);
+			else
+				System.out.println("NULL WHORE");
+			/*EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
+			
+			if (Math.random()>0.5)
+				objects.add(new Boy(new Vector2i(0,0),8,userData));//(int)(Math.random() * ((7 - 2) + 1)),userData));//randomized speed within a range 1000-500
+			else
+				objects.add(new Bug(new Vector2i(0,0),8,userData));*/
+
 		}
 	}
 	
 
+	
+	public void configureWaveManager() {
+		waveManager = new WaveManager();
+		waveManager.addWave(new Wave(generateEnemies()));
+		waveManager.addWave(new Wave(generateEnemies()));
+		waveManager.addWave(new Wave(generateEnemies()));
+	}
+	
+	private Collection<AbstractEnemy> generateEnemies() {
+		ArrayList<AbstractEnemy> list = new ArrayList<AbstractEnemy>();
+		
+		EnemyUserData userData = new EnemyUserData(new PathWrapper(path,50,50));
+		for (int i=0;i<Math.random()*20;i++)
+		if (Math.random()>0.5)
+			list.add(new Boy(new Vector2i(0,0),8,userData));
+		else
+			list.add(new Bug(new Vector2i(0,0),10,userData));
+		
+		return list;
+	}
 	
 	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
